@@ -1,0 +1,6 @@
+
+Que el "wrap" de "plataforma se muestre a la izquierda tanto en la seccion "plataforma", como en el Resultado(previsalizacion), imagen y pdf
+
+sin afectar la funcionalidad de las demas secciones, ni la previsualizacion?
+_____________________________________________________________
+
