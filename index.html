@@ -661,7 +661,7 @@
 </div>
 <div class="flex justify-center mt-8">
 <button onclick="generarYMostrarResultado()" type="button">Generar Notificación y Previsualizar</button>&nbsp;==>&nbsp; 
-                <button id="enviarCorreoBtn" onclick="generarHtmlParaCorreo()" type="button">Genera Correo para Validacion</button>&nbsp;/
+                <button id="enviarCorreoBtn" onclick="generarHtmlParaCorreo()" type="button">Genera Correo para Vo.Bo.</button>&nbsp;/
 		<button id="btnExportImagen" onclick="generarImagen()" type="button" style="display:none;">&nbsp;Exportar como Imagen</button>&nbsp;/&nbsp;<button id="btnExportPDF" onclick="generarPDF()" type="button" style="display:none;">Exportar como PDF</button>
 </div>
 </form>
@@ -928,11 +928,12 @@
 
 
             // Validate required fields
-            if (!tituloNotificacion || !tipoNotificacion || plataformasSeleccionadas.length === 0) { // Check if at least one platform is selected
+            /*if (!tituloNotificacion || !tipoNotificacion || plataformasSeleccionadas.length === 0) { // Check if at least one platform is selected
                 resultadoDiv.innerHTML = '<p class="text-red-500 text-center">Por favor, completa los campos obligatorios: "Título de la Notificación", "Tipo de Notificación" y "Plataforma" (selecciona al menos una).</p>';
                 enviarCorreoBtn.style.display = 'none';
                 return;
             }
+	    */
 
             // Determine table border color based on notification type (not directly used in new grid, but kept for context if needed elsewhere)
             const tableBorderClass = tipoNotificacion === 'Afectacion' ? 'red-border-table' : 'blue-border-table';
@@ -1112,7 +1113,7 @@ plataformaImagesHtml += `</div>`;
 
             // Validación básica: se requiere título, tipo y al menos una plataforma
             if (!titulo || plataformas.length === 0 || !tipoNotifTexto) {
-                alert('Debes generar primero la previsualización con todos los campos obligatorios.');
+                alert('Función no disponible sin previsualización completada');
                 return;
             }
 
