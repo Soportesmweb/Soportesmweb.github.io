@@ -572,6 +572,23 @@
                 <option value="eduardo.sierra@speedymovil.com">eduardo.sierra@speedymovil.com</option>
             </select>
         </div>
+	<div class="section-container" id="enviarExternosSection">
+    	    <label class="font-bold" for="paisExternosSelect">Enviar a Externos:</label>
+   	    <select id="paisExternosSelect" class="focus:ring-indigo-500 focus:border-indigo-500 mb-4">
+   	        <option value="">-- Selecciona un país --</option>
+        	<option value="Mexico">México</option>
+        	<option value="Argentina">Argentina</option>
+        	<option value="Colombia">Colombia</option>
+        	<option value="Brasil">Brasil</option>
+        	<option value="Chile">Chile</option>
+        	<option value="Peru">Perú</option>
+        	<!-- Agrega más países según necesidad -->
+    	    </select>
+            <div id="correosExternosContainer" class="bg-gray-50 border border-gray-300 rounded p-3 text-sm text-gray-700 mb-3" style="min-height:60px;">
+                Selecciona un país para ver los correos...
+            </div>
+            <button type="button" id="btnCopiarExternos" class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md">Copiar correos</button>
+        </div>
         <div class="section-container">
             <h3 class="text-lg font-bold text-gray-800 mb-4">Países Afectados:</h3>
             <div class="flex items-center mb-4">
@@ -679,6 +696,16 @@
     </div>
 </div>
 <script>
+    // Lista de correos por país
+    const correosExternosPorPais = {
+        "Mexico": ["mex@speedymovil.com", "sm-all@speedymovil.com"],
+        "Argentina": ["arg@speedymovil.com"],
+        "Colombia": ["col@speedymovil.com", "col-all@speedymovil.com"],
+        "Brasil": ["bra@speedymovil.com"],
+        "Chile": ["chi@speedymovil.com"],
+        "Peru": ["per@speedymovil.com"]
+    };
+
     /**
      * Función para calcular y mostrar la afectación total en Horas y Minutos.
      */
@@ -1089,6 +1116,29 @@
         document.getElementById('tipoSistema').addEventListener('change', handleTipoSistemaChange);
         handleTipoSistemaChange();
         document.getElementById('selectAllCountries').addEventListener('change', handleSelectAllCountries);
+
+        // Event listeners para la sección de externos
+        document.getElementById('paisExternosSelect').addEventListener('change', function() {
+            const pais = this.value;
+            const contenedor = document.getElementById('correosExternosContainer');
+            if (pais && correosExternosPorPais[pais]) {
+                contenedor.innerHTML = correosExternosPorPais[pais].join('<br>');
+            } else {
+                contenedor.innerHTML = 'Selecciona un país para ver los correos...';
+            }
+        });
+
+        document.getElementById('btnCopiarExternos').addEventListener('click', function() {
+            const pais = document.getElementById('paisExternosSelect').value;
+            if (pais && correosExternosPorPais[pais]) {
+                const texto = correosExternosPorPais[pais].join(', ');
+                navigator.clipboard.writeText(texto)
+                    .then(() => alert('Correos copiados al portapapeles: ' + texto))
+                    .catch(() => alert('No se pudo copiar. Por favor, copia manualmente.'));
+            } else {
+                alert('Selecciona un país válido para copiar sus correos');
+            }
+        });
     });
 
     function handleSelectAllCountries() {
