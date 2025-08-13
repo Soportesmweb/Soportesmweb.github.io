@@ -511,7 +511,7 @@
             </div>
             <div class="mt-4">
                 <label>Afectación Total:</label>
-                <p class="text-lg font-semibold text-gray-700" id="afectacionTotal">0 horas</p>
+                <p class="text-lg font-semibold text-gray-700" id="afectacionTotal">Sin Afectación</p>
             </div>
         </div>
         <div class="section-container">
@@ -559,9 +559,17 @@
                 <input class="flex-grow focus:ring-indigo-500 focus:border-indigo-500 mb-0" id="correoAdicionalText" placeholder="Introduce nuevo correo" type="text"/>
                 <button class="px-4 py-2 text-sm bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors duration-200" onclick="agregarCorreoAdicional()" type="button">Agregar</button>
             </div>
-            <select class="focus:ring-indigo-500 focus:border-indigo-500" id="listasDistribucionSelect" multiple="" size="5">
+            <select class="focus:ring-indigo-500 focus:border-indigo-500" id="listasDistribucionSelect" multiple="" size="8">
                 <option value="soporte@speedymovil.com">soporte@speedymovil.com</option>
                 <option value="aldo.castillo@speedymovil.com">aldo.castillo@speedymovil.com</option>
+		<option value="sonia.aragon@speedymovil.com">sonia.aragon@speedymovil.com</option>
+		<option value="abraham.quintero@speedymovil.com">abraham.quintero@speedymovil.com</option>
+		<option value="irene.lopez@speedymovil.com">irene.lopez@speedymovil.com</option>
+		<option value="monica.delacruz@speedymovil.com">monica.delacruz@speedymovil.com</option>
+		<option value="brandon.soto@speedymovil.com">brandon.soto@speedymovil.com</option>
+		<option value="jonathan.sumano@speedymovil.com">jonathan.sumano@speedymovil.com</option>
+		<option value="guadalupe.rodriguez@speedymovil.com">guadalupe.rodriguez@speedymovil.com</option>
+		<option value="jose.rosas@speedymovil.com">jose.rosas@speedymovil.com</option>
                 <option value="eduardo.sierra@speedymovil.com">eduardo.sierra@speedymovil.com</option>
             </select>
         </div>
@@ -686,7 +694,7 @@
         }
 
         if (!horaInicioInput || !horaFinInput) {
-            afectacionTotalElement.textContent = '0 minutos';
+            afectacionTotalElement.textContent = 'Sin Afectación';
             return;
         }
 
@@ -705,7 +713,7 @@
         const diferenciaMilisegundos = fechaFin.getTime() - fechaInicio.getTime();
         
         if (diferenciaMilisegundos === 0) {
-            afectacionTotalElement.textContent = '0 minutos';
+            afectacionTotalElement.textContent = 'Sin Afectación';
             return;
         }
 
@@ -719,7 +727,7 @@
         }
         if (minutos > 0) {
             if (resultadoString.length > 0) {
-                resultadoString += ' y ';
+                resultadoString += ' - ';
             }
             resultadoString += `${minutos} ${minutos === 1 ? 'minuto' : 'minutos'}`;
         }
