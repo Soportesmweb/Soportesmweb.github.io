@@ -61,7 +61,7 @@
         }
         
         button {
-            background-color: #6366f1; 
+            background-color: #a0aec0; /* Fondo gris por defecto */
             color: white;
             padding: 14px 25px;
             border: none;
@@ -75,7 +75,7 @@
             margin-right: 15px; 
         }
         button:hover {
-            background-color: #4f46e5; 
+            background-color: #4f46e5; /* Color al pasar el puntero */
             transform: translateY(-2px); 
         }
         button:active {
@@ -487,6 +487,13 @@
                 <option value="Active Directory">Active Directory</option>
                 <option value="WiFi">WiFi</option>
                 <option value="Unifi">Unifi</option>
+                <option value="Splunk">Splunk</option>
+                <option value="Kibana">Kibana</option>
+                <option value="Dynatrace">Dynatrace</option>
+                <option value="AppDynamics">AppDynamics</option>
+                <option value="Mi Claro Chile">Mi Claro Chile</option>
+                <option value="Mi Claro CENAM">Mi Claro CENAM</option>
+                <option value="Mi Claro Perú">Mi Claro Perú</option>
             </select>
             <div class="platform-images-container" id="plataformasSeleccionadasContainer"></div>
         </div>
@@ -582,8 +589,7 @@
         	<option value="Brasil">Brasil</option>
         	<option value="Chile">Chile</option>
         	<option value="Peru">Perú</option>
-        	<!-- Agrega más países según necesidad -->
-    	    </select>
+        	</select>
             <div id="correosExternosContainer" class="bg-gray-50 border border-gray-300 rounded p-3 text-sm text-gray-700 mb-3" style="min-height:60px;">
                 Selecciona un país para ver los correos...
             </div>
@@ -686,7 +692,9 @@
         <div class="flex justify-center mt-8">
             <button onclick="generarYMostrarResultado()" type="button">Generar Notificación y Previsualizar</button>&nbsp;==>&nbsp; 
             <button id="enviarCorreoBtn" onclick="generarHtmlParaCorreo()" type="button">Genera Correo para Vo.Bo.</button>&nbsp;/
-            <button id="btnExportImagen" onclick="generarImagen()" type="button" style="display:none;">&nbsp;Exportar como Imagen</button>&nbsp;/&nbsp;<button id="btnExportPDF" onclick="generarPDF()" type="button" style="display:none;">Exportar como PDF</button>
+            <button id="btnExportImagen" onclick="generarImagen()" type="button" style="display:none;">&nbsp;Exportar como Imagen</button>&nbsp;/&nbsp;
+            <button id="btnExportPDF" onclick="generarPDF()" type="button" style="display:none;">Exportar como PDF</button>&nbsp;/&nbsp;
+            <button id="btnGuardarTXT" onclick="guardarComoTXT()" type="button" style="display:none;">Guardar como TXT</button>
         </div>
     </form>
     <hr class="my-10 border-t-2 border-gray-200"/>
@@ -938,7 +946,10 @@
             "Netflix": "netflix.png", "Disney": "disney.png", "Amazon": "amazon.png",
             "F1": "f1.png", "HBO": "hbo.png", "Fortinet": "fortinet.png",
             "Infinitum": "infinitum.png", "Telmex": "telmex.png", "Internet": "internet.png",
-            "Active Directory": "AD.png", "WiFi": "wifi.png", "Unifi": "unifi.png"
+            "Active Directory": "AD.png", "WiFi": "wifi.png", "Unifi": "unifi.png",
+            "Splunk": "Splunk.png", "Kibana": "Kibana.png", "Dynatrace": "Dynatrace.png", 
+            "AppDynamics": "AppDynamics.png", "Mi Claro Chile": "Mi Claro Chile.png", 
+            "Mi Claro CENAM": "Mi Claro CENAM.png", "Mi Claro Perú": "Mi Claro Perú.png"
         };
 
         const tipoNotificacionImageMap = {
@@ -1036,6 +1047,7 @@
         enviarCorreoBtn.style.display = 'inline-block';
         document.getElementById('btnExportImagen').style.display = 'inline-block';
         document.getElementById('btnExportPDF').style.display = 'inline-block';
+        document.getElementById('btnGuardarTXT').style.display = 'inline-block';
     }
     
     function generarHtmlParaCorreo() {
@@ -1087,7 +1099,10 @@
             "Netflix": "netflix.png", "Disney": "disney.png", "Amazon": "amazon.png",
             "F1": "f1.png", "HBO": "hbo.png", "Fortinet": "fortinet.png",
             "Infinitum": "infinitum.png", "Telmex": "telmex.png", "Internet": "internet.png",
-            "Active Directory": "AD.png", "WiFi": "wifi.png", "Unifi": "unifi.png"
+            "Active Directory": "AD.png", "WiFi": "wifi.png", "Unifi": "unifi.png",
+            "Splunk": "Splunk.png", "Kibana": "Kibana.png", "Dynatrace": "Dynatrace.png", 
+            "AppDynamics": "AppDynamics.png", "Mi Claro Chile": "Mi Claro Chile.png", 
+            "Mi Claro CENAM": "Mi Claro CENAM.png", "Mi Claro Perú": "Mi Claro Perú.png"
         };
         selectedValues.forEach(platform => {
             if (imageMap[platform]) {
@@ -1223,6 +1238,105 @@
             resultado.style.maxWidth = originalMaxWidth;
             resultado.style.width = originalWidth;
         });
+    }
+
+    /**
+     * Función para guardar la información de la notificación en un archivo .txt.
+     */
+    function guardarComoTXT() {
+        const resultado = document.getElementById('resultado');
+        if (!resultado || resultado.innerText.includes("La previsualizacion se mostrará aquí")) {
+            alert("Primero debes generar una notificación para poder guardarla.");
+            return;
+        }
+
+        // 1. Recolectar toda la información de los campos (similar a la función de previsualización)
+        const tituloNotificacion = document.getElementById('tituloNotificacion').value.trim();
+        const tipoNotificacionSelect = document.getElementById('tipoNotificacion');
+        const tipoNotificacionTexto = tipoNotificacionSelect.options[tipoNotificacionSelect.selectedIndex].text;
+        const plataformasSeleccionadas = getSelectedOptions(document.getElementById('tipoSistema'));
+        const descripcionCorta = document.getElementById('descripcionCorta').value.trim();
+        const consideracionesServicio = document.getElementById('consideracionesServicio').value.trim();
+        const horaInicio = document.getElementById('horaInicio').value;
+        const horaFin = document.getElementById('horaFin').value;
+        const afectacionTotal = document.getElementById('afectacionTotal').textContent;
+        const equiposResponsablesSeleccionados = getSelectedOptions(document.getElementById('equipoResponsableSelect'));
+        const causaRaiz = document.getElementById('causaRaiz').value.trim();
+        const afectacionUsuarioFinal = document.getElementById('afectacionUsuarioFinal').value.trim();
+
+        const serviciosConPorcentaje = [];
+        document.querySelectorAll('#serviciosPorcentajeContainer .servicio-porcentaje-item input[type="number"]').forEach(input => {
+            const serviceName = input.dataset.serviceName;
+            const percentage = input.value.trim();
+            if (serviceName) {
+                serviciosConPorcentaje.push(`${serviceName}${percentage ? ` (${percentage}%)` : ''}`);
+            }
+        });
+
+        const paisesAfectadosCheckboxes = document.querySelectorAll('input[name="paisesAfectados"]:checked');
+        const paisesAfectadosNombres = Array.from(paisesAfectadosCheckboxes).map(cb => cb.value);
+
+        // 2. Formatear la información como texto plano
+        let contenidoTXT = `
+========================================
+RESUMEN DE LA NOTIFICACIÓN
+========================================
+
+Título: ${tituloNotificacion || 'No especificado'}
+Tipo de Notificación: ${tipoNotificacionTexto || 'No especificado'}
+
+----------------------------------------
+DETALLES
+----------------------------------------
+
+Plataforma(s): ${plataformasSeleccionadas.join(', ') || 'No especificadas'}
+¿En qué consiste?: ${descripcionCorta || 'No especificado'}
+Consideraciones sobre el servicio: ${consideracionesServicio || 'Ninguna'}
+
+----------------------------------------
+CRONOLOGÍA Y AFECTACIÓN
+----------------------------------------
+
+Hora de Inicio: ${horaInicio ? new Date(horaInicio).toLocaleString() : '--'}
+Hora de Fin: ${horaFin ? new Date(horaFin).toLocaleString() : '--'}
+Afectación Total: ${afectacionTotal || 'No especificada'}
+
+----------------------------------------
+ANÁLISIS Y RESPONSABLES
+----------------------------------------
+
+Equipo(s) Responsable(s): ${equiposResponsablesSeleccionados.join(', ') || 'Por Definir'}
+Causa Raíz: ${causaRaiz || 'Por Definir'}
+
+----------------------------------------
+IMPACTO
+----------------------------------------
+
+Servicio(s) Afectado(s): ${serviciosConPorcentaje.join(', ') || 'Por Definir'}
+Afectación al usuario final: ${afectacionUsuarioFinal || 'Por Definir'}
+País(es) Afectado(s): ${paisesAfectadosNombres.join(', ') || 'Por Definir'}
+
+========================================
+Generado el ${new Date().toLocaleString()}
+========================================
+`;
+
+        // 3. Crear el nombre del archivo usando la función existente
+        const nombreArchivo = construirNombreArchivo() + '.txt';
+
+        // 4. Crear un Blob y un enlace para descargar el archivo
+        const blob = new Blob([contenidoTXT.trim()], { type: 'text/plain;charset=utf-8' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = nombreArchivo;
+
+        // Simular clic para iniciar la descarga
+        document.body.appendChild(link);
+        link.click();
+
+        // Limpiar
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
     }
 </script>
 </body>
