@@ -582,7 +582,7 @@
 	<div class="section-container" id="enviarExternosSection">
     	    <label class="font-bold" for="paisExternosSelect">Listas de Distribución:</label>
    	    <select id="paisExternosSelect" class="focus:ring-indigo-500 focus:border-red-500 mb-4">
-   	        <option value="">-- Selecciona un país --</option>
+   	        <option value="">-- Selecciona un país/plataforma --</option>
         	<option value="Mexico">México</option>
         	<option value="Argentina">Argentina</option>
         	<option value="Colombia">Colombia</option>
@@ -591,7 +591,7 @@
         	<option value="Peru">Perú</option>
         	</select>
             <div id="correosExternosContainer" class="bg-gray-50 border border-gray-300 rounded p-3 text-sm text-gray-700 mb-3" style="min-height:60px;">
-                Selecciona un país para ver los correos...
+                Selecciona un país/plataforma para ver los correos...
             </div>
             <button type="button" id="btnCopiarExternos" class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md">Copiar correos</button>
         </div>
@@ -1139,7 +1139,7 @@
             if (pais && correosExternosPorPais[pais]) {
                 contenedor.innerHTML = correosExternosPorPais[pais].join('<br>');
             } else {
-                contenedor.innerHTML = 'Selecciona un país para ver los correos...';
+                contenedor.innerHTML = 'Selecciona un país/plataforma para ver los correos...';
             }
         });
 
@@ -1151,7 +1151,7 @@
                     .then(() => alert('Correos copiados al portapapeles: ' + texto))
                     .catch(() => alert('No se pudo copiar. Por favor, copia manualmente.'));
             } else {
-                alert('Selecciona un país válido para copiar sus correos');
+                alert('Selecciona un país/plataforma válido para copiar sus correos');
             }
         });
     });
