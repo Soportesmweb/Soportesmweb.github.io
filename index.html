@@ -1355,7 +1355,7 @@ Generado el ${new Date().toLocaleString()}
 
 <script>
 // ==============================
-// CARGAR DATOS DESDE TXT (completo)
+// CARGAR DATOS DESDE TXT (CORREGIDO)
 // ==============================
 window.cargarDesdeTXT = function() {
     var fileInput = document.getElementById('inputCargarTXT');
@@ -1375,22 +1375,21 @@ window.cargarDesdeTXT = function() {
             const contenido = e.target.result || '';
 
             const getValue = (label) => {
-                const regex = new RegExp(label + ": (.*)");
+                const regex = new RegExp("^" + label + ": (.*)$", "m");
                 const match = contenido.match(regex);
                 return match ? match[1].trim() : "";
             };
 
-            // ======= Campos =======
             let v;
 
             // Título
             v = getValue("Título");
-            if (v) { let el = document.getElementById('tituloNotificacion'); if (el) el.value = v; }
+            if (v !== "") { document.getElementById('tituloNotificacion').value = v; }
 
             // Tipo de Notificación
             v = getValue("Tipo de Notificación").replace(/\[|\]/g,"").trim();
-            let sel = document.getElementById('tipoNotificacion');
-            if (sel) {
+            if (v) {
+                let sel = document.getElementById('tipoNotificacion');
                 Array.from(sel.options).forEach(opt => {
                     let t = (opt.text||"").replace(/\[|\]/g,"").trim();
                     if (t === v) opt.selected = true;
@@ -1398,24 +1397,22 @@ window.cargarDesdeTXT = function() {
             }
 
             // Plataforma(s)
-            v = getValue("Plataforma\(s\)");
+            v = getValue("Plataforma\\(s\\)");
             if (v) {
-                let list = v.split(",").map(x=>x.trim());
+                let list = v.split(",").map(x=>x.trim()).filter(Boolean);
                 let selPlat = document.getElementById('tipoSistema');
-                if (selPlat) {
-                    Array.from(selPlat.options).forEach(opt => {
-                        opt.selected = list.includes(opt.value) || list.includes(opt.text);
-                    });
-                }
+                Array.from(selPlat.options).forEach(opt => {
+                    opt.selected = list.includes(opt.value);
+                });
             }
 
             // ¿En qué consiste?
-            v = getValue("¿En qué consiste\?");
-            if (v) { let el = document.getElementById('descripcionCorta'); if (el) el.value = v; }
+            v = getValue("¿En qué consiste\\?");
+            if (v !== "") { document.getElementById('descripcionCorta').value = v; }
 
             // Consideraciones
             v = getValue("Consideraciones sobre el servicio");
-            if (v) { let el = document.getElementById('consideracionesServicio'); if (el) el.value = v; }
+            if (v !== "") { document.getElementById('consideracionesServicio').value = v; }
 
             // Hora de Inicio / Fin
             function parseFecha(texto) {
@@ -1427,70 +1424,97 @@ window.cargarDesdeTXT = function() {
                 var d = f[0], m = f[1], y = f[2];
                 var hora = partes[1].trim();
                 var hhmm = hora.slice(0,5);
-                return y+"-"+m.padStart(2,"0")+"-"+d.padStart(2,"0")+"T"+hhmm;
+                return y + "-" + m.padStart(2,"0") + "-" + d.padStart(2,"0") + "T" + hhmm;
             }
-            v = getValue("Hora de Inicio"); let el = document.getElementById('horaInicio'); if (el) el.value = parseFecha(v);
-            v = getValue("Hora de Fin"); let el2 = document.getElementById('horaFin'); if (el2) el2.value = parseFecha(v);
-
-            // Afectación Total
-            v = getValue("Afectación Total");
-            if (v) { let el = document.getElementById('afectacionTotal'); if (el) el.value = v; }
-
+            v = getValue("Hora de Inicio"); if (v) { document.getElementById('horaInicio').value = parseFecha(v); }
+            v = getValue("Hora de Fin"); if (v) { document.getElementById('horaFin').value = parseFecha(v); }
+            
             // Equipo(s) Responsable(s)
-            v = getValue("Equipo\(s\) Responsable\(s\)");
+            v = getValue("Equipo\\(s\\) Responsable\\(s\\)");
             if (v) {
-                let list = v.split(",").map(x=>x.trim());
-                let selEq = document.getElementById('equiposResponsables');
-                if (selEq) {
-                    Array.from(selEq.options).forEach(opt => {
-                        opt.selected = list.includes(opt.value) || list.includes(opt.text);
-                    });
-                }
+                let list = v.split(",").map(x => x.trim()).filter(Boolean);
+                let selEq = document.getElementById('equipoResponsableSelect');
+                let existingOptions = Array.from(selEq.options).map(opt => opt.value);
+                list.forEach(item => {
+                    if (!existingOptions.includes(item)) {
+                        const newOption = document.createElement('option');
+                        newOption.value = item;
+                        newOption.textContent = item;
+                        selEq.appendChild(newOption);
+                    }
+                });
+                Array.from(selEq.options).forEach(opt => {
+                    opt.selected = list.includes(opt.value);
+                });
             }
 
             // Servicio(s) Afectado(s)
-            v = getValue("Servicio\(s\) Afectado\(s\)");
+            v = getValue("Servicio\\(s\\) Afectado\\(s\\)");
             if (v) {
-                let list = v.split(",").map(x=>x.trim());
-                let selSrv = document.getElementById('serviciosAfectados');
-                if (selSrv) {
-                    Array.from(selSrv.options).forEach(opt => {
-                        opt.selected = list.includes(opt.value) || list.includes(opt.text);
-                    });
-                }
+                const servicesWithPercentages = v.split(',').map(item => {
+                    const match = item.trim().match(/^(.*?)(?:\s\((\d+)%\))?$/);
+                    return match ? { name: match[1], percentage: match[2] || null } : null;
+                }).filter(Boolean);
+
+                const serviceNames = servicesWithPercentages.map(s => s.name);
+                const selSrv = document.getElementById('servicioAfectadoSelect');
+                let existingServices = Array.from(selSrv.options).map(opt => opt.value);
+                
+                serviceNames.forEach(name => {
+                    if (!existingServices.includes(name)) {
+                        const newOption = document.createElement('option');
+                        newOption.value = name;
+                        newOption.textContent = name;
+                        selSrv.appendChild(newOption);
+                    }
+                });
+                
+                Array.from(selSrv.options).forEach(opt => {
+                    opt.selected = serviceNames.includes(opt.value);
+                });
+                
+                handleServicioAfectadoChange();
+                
+                servicesWithPercentages.forEach(service => {
+                    if (service.percentage !== null) {
+                        const input = document.querySelector(`#serviciosPorcentajeContainer input[data-service-name="${service.name}"]`);
+                        if (input) input.value = service.percentage;
+                    }
+                });
             }
 
             // Causa Raíz
             v = getValue("Causa Raíz");
-            if (v) { let el = document.getElementById('causaRaiz'); if (el) el.value = v; }
+            if (v !== "") { document.getElementById('causaRaiz').value = v; }
 
             // Afectación usuario final
             v = getValue("Afectación al usuario final");
-            if (v) { let el = document.getElementById('afectacionUsuarioFinal'); if (el) el.value = v; }
+            if (v !== "") { document.getElementById('afectacionUsuarioFinal').value = v; }
 
             // País(es) Afectados
-            v = getValue("País\(es\) Afectado\(s\)");
+            v = getValue("País\\(es\\) Afectado\\(s\\)");
             if (v) {
                 let list = v.split(",").map(x=>x.trim());
-                let cbs = document.querySelectorAll('input[name="paisesAfectados"]');
-                cbs.forEach(cb => {
-                    cb.checked = list.includes(cb.value) || list.includes(cb.getAttribute('data-name')||"");
+                document.querySelectorAll('input[name="paisesAfectados"]').forEach(cb => {
+                    cb.checked = list.includes(cb.value);
                 });
             }
 
-            // Recalcular y generar previsualización automática
-            if (typeof calcularAfectacionTotal === "function") {
-                try { calcularAfectacionTotal(); } catch(e){}
-            }
-            if (typeof generarYMostrarResultado === "function") {
-                try { generarYMostrarResultado(); } catch(e){}
+            // --- Recalcular y refrescar UI ---
+            try {
+                calcularAfectacionTotal();
+                handleTipoSistemaChange(); 
+                generarYMostrarResultado();
+            } catch(e){
+                console.error("Error al refrescar la vista previa:", e);
             }
 
             alert("✅ Datos cargados desde el TXT y previsualización generada");
         };
         reader.readAsText(file);
-        event.target.value = "";
+        event.target.value = ""; // Permite recargar el mismo archivo
     }
+    
     function hook(){
         var input = document.getElementById('inputCargarTXT');
         if (input && !input._hooked) {
@@ -1498,8 +1522,12 @@ window.cargarDesdeTXT = function() {
             input._hooked = true;
         }
     }
-    if (document.readyState==="loading") document.addEventListener('DOMContentLoaded', hook);
-    else hook();
+
+    if (document.readyState === "loading") {
+        document.addEventListener('DOMContentLoaded', hook);
+    } else {
+        hook();
+    }
 })();
 </script>
 
