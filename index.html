@@ -1355,7 +1355,7 @@ Generado el ${new Date().toLocaleString()}
 
 <script>
 // ==============================
-// CARGAR DATOS DESDE TXT (integración)
+// CARGAR DATOS DESDE TXT (completo)
 // ==============================
 window.cargarDesdeTXT = function() {
     var fileInput = document.getElementById('inputCargarTXT');
@@ -1366,62 +1366,58 @@ window.cargarDesdeTXT = function() {
     fileInput.click();
 };
 
-(function attachTXTChangeHandler(){
+(function attachTXTHandler(){
     function onChangeHandler(event) {
         const file = event.target.files && event.target.files[0];
         if (!file) return;
-
         const reader = new FileReader();
         reader.onload = function(e) {
             const contenido = e.target.result || '';
 
-            // Helper para extraer valores por etiqueta
             const getValue = (label) => {
                 const regex = new RegExp(label + ": (.*)");
                 const match = contenido.match(regex);
                 return match ? match[1].trim() : "";
             };
 
-            // Campos de texto / selects
-            var elTitulo = document.getElementById('tituloNotificacion');
-            if (elTitulo) elTitulo.value = getValue("Título");
+            // ======= Campos =======
+            let v;
 
-            // Tipo de Notificación (match por texto visible; ignora corchetes)
-            var selectTipo = document.getElementById('tipoNotificacion');
-            if (selectTipo) {
-                const tipoNotif = getValue("Tipo de Notificación").replace(/\[|\]/g,"").trim();
-                Array.from(selectTipo.options).forEach(function(opt){
-                    const optText = (opt.text || "").replace(/\[|\]/g,"").trim();
-                    if (optText === tipoNotif) opt.selected = true;
+            // Título
+            v = getValue("Título");
+            if (v) { let el = document.getElementById('tituloNotificacion'); if (el) el.value = v; }
+
+            // Tipo de Notificación
+            v = getValue("Tipo de Notificación").replace(/\[|\]/g,"").trim();
+            let sel = document.getElementById('tipoNotificacion');
+            if (sel) {
+                Array.from(sel.options).forEach(opt => {
+                    let t = (opt.text||"").replace(/\[|\]/g,"").trim();
+                    if (t === v) opt.selected = true;
                 });
             }
 
-            // Plataformas (multiple)
-            var selectPlataforma = document.getElementById('tipoSistema');
-            if (selectPlataforma) {
-                const plataformasTxt = getValue("Plataforma\(s\)");
-                const plataformas = plataformasTxt ? plataformasTxt.split(",").map(x=>x.trim()) : [];
-                Array.from(selectPlataforma.options).forEach(function(opt){
-                    const name = (opt.value || "").trim();
-                    const label = (opt.text || "").trim();
-                    opt.selected = plataformas.includes(name) || plataformas.includes(label);
-                });
+            // Plataforma(s)
+            v = getValue("Plataforma\(s\)");
+            if (v) {
+                let list = v.split(",").map(x=>x.trim());
+                let selPlat = document.getElementById('tipoSistema');
+                if (selPlat) {
+                    Array.from(selPlat.options).forEach(opt => {
+                        opt.selected = list.includes(opt.value) || list.includes(opt.text);
+                    });
+                }
             }
 
-            // Textareas
-            var desc = document.getElementById('descripcionCorta');
-            if (desc) desc.value = getValue("¿En qué consiste\?");
+            // ¿En qué consiste?
+            v = getValue("¿En qué consiste\?");
+            if (v) { let el = document.getElementById('descripcionCorta'); if (el) el.value = v; }
 
-            var cons = document.getElementById('consideracionesServicio');
-            if (cons) cons.value = getValue("Consideraciones sobre el servicio");
+            // Consideraciones
+            v = getValue("Consideraciones sobre el servicio");
+            if (v) { let el = document.getElementById('consideracionesServicio'); if (el) el.value = v; }
 
-            var raiz = document.getElementById('causaRaiz');
-            if (raiz) raiz.value = getValue("Causa Raíz");
-
-            var afecta = document.getElementById('afectacionUsuarioFinal');
-            if (afecta) afecta.value = getValue("Afectación al usuario final");
-
-            // Horas -> datetime-local (ej: "15/08/2025, 20:30:00")
+            // Hora de Inicio / Fin
             function parseFecha(texto) {
                 if (!texto || texto === "--") return "";
                 var partes = texto.split(",");
@@ -1429,52 +1425,81 @@ window.cargarDesdeTXT = function() {
                 var f = partes[0].trim().split("/");
                 if (f.length !== 3) return "";
                 var d = f[0], m = f[1], y = f[2];
-                var hora = partes[1].trim(); // HH:MM:SS
-                var hhmm = hora.slice(0,5);  // HH:MM
-                return y + "-" + m.padStart(2,"0") + "-" + d.padStart(2,"0") + "T" + hhmm;
+                var hora = partes[1].trim();
+                var hhmm = hora.slice(0,5);
+                return y+"-"+m.padStart(2,"0")+"-"+d.padStart(2,"0")+"T"+hhmm;
             }
-            var hi = document.getElementById('horaInicio');
-            if (hi) hi.value = parseFecha(getValue("Hora de Inicio"));
-            var hf = document.getElementById('horaFin');
-            if (hf) hf.value = parseFecha(getValue("Hora de Fin"));
+            v = getValue("Hora de Inicio"); let el = document.getElementById('horaInicio'); if (el) el.value = parseFecha(v);
+            v = getValue("Hora de Fin"); let el2 = document.getElementById('horaFin'); if (el2) el2.value = parseFecha(v);
 
-            // Países (checkboxes con name="paisesAfectados")
-            const paises = (getValue("País\(es\) Afectado\(s\)") || "").split(",").map(x=>x.trim()).filter(Boolean);
-            var paisCheckboxes = document.querySelectorAll('input[name="paisesAfectados"]');
-            if (paisCheckboxes && paisCheckboxes.length) {
-                paisCheckboxes.forEach(function(cb){
-                    const val = (cb.value || "").trim();
-                    const dataName = (cb.getAttribute('data-name') || "").trim();
-                    cb.checked = paises.includes(val) || (dataName && paises.includes(dataName));
+            // Afectación Total
+            v = getValue("Afectación Total");
+            if (v) { let el = document.getElementById('afectacionTotal'); if (el) el.value = v; }
+
+            // Equipo(s) Responsable(s)
+            v = getValue("Equipo\(s\) Responsable\(s\)");
+            if (v) {
+                let list = v.split(",").map(x=>x.trim());
+                let selEq = document.getElementById('equiposResponsables');
+                if (selEq) {
+                    Array.from(selEq.options).forEach(opt => {
+                        opt.selected = list.includes(opt.value) || list.includes(opt.text);
+                    });
+                }
+            }
+
+            // Servicio(s) Afectado(s)
+            v = getValue("Servicio\(s\) Afectado\(s\)");
+            if (v) {
+                let list = v.split(",").map(x=>x.trim());
+                let selSrv = document.getElementById('serviciosAfectados');
+                if (selSrv) {
+                    Array.from(selSrv.options).forEach(opt => {
+                        opt.selected = list.includes(opt.value) || list.includes(opt.text);
+                    });
+                }
+            }
+
+            // Causa Raíz
+            v = getValue("Causa Raíz");
+            if (v) { let el = document.getElementById('causaRaiz'); if (el) el.value = v; }
+
+            // Afectación usuario final
+            v = getValue("Afectación al usuario final");
+            if (v) { let el = document.getElementById('afectacionUsuarioFinal'); if (el) el.value = v; }
+
+            // País(es) Afectados
+            v = getValue("País\(es\) Afectado\(s\)");
+            if (v) {
+                let list = v.split(",").map(x=>x.trim());
+                let cbs = document.querySelectorAll('input[name="paisesAfectados"]');
+                cbs.forEach(cb => {
+                    cb.checked = list.includes(cb.value) || list.includes(cb.getAttribute('data-name')||"");
                 });
             }
 
-            // Recalcular afectación total si la función existe
+            // Recalcular y generar previsualización automática
             if (typeof calcularAfectacionTotal === "function") {
-                try { calcularAfectacionTotal(); } catch(e){ /* noop */ }
+                try { calcularAfectacionTotal(); } catch(e){}
+            }
+            if (typeof generarYMostrarResultado === "function") {
+                try { generarYMostrarResultado(); } catch(e){}
             }
 
-            alert("✅ Datos cargados desde el TXT correctamente");
+            alert("✅ Datos cargados desde el TXT y previsualización generada");
         };
         reader.readAsText(file);
-        // Permitir recargar el mismo archivo
         event.target.value = "";
     }
-
-    function hook() {
+    function hook(){
         var input = document.getElementById('inputCargarTXT');
-        if (input && !input._cargarHooked) {
+        if (input && !input._hooked) {
             input.addEventListener('change', onChangeHandler);
-            input._cargarHooked = true;
+            input._hooked = true;
         }
     }
-
-    // Engancha al cargar DOM y también intenta inmediatamente
-    if (document.readyState === "loading") {
-        document.addEventListener('DOMContentLoaded', hook);
-    } else {
-        hook();
-    }
+    if (document.readyState==="loading") document.addEventListener('DOMContentLoaded', hook);
+    else hook();
 })();
 </script>
 
