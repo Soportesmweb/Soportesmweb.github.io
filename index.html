@@ -364,7 +364,7 @@
             text-align: center;
             font-size: 0.8rem;
             color: #555;
-            width: 90px;
+            width: 110px; /* MODIFIED: Increased width for larger images */
         }
         .platform-images-container .platform-item img {
             display: block;
@@ -380,7 +380,7 @@
             font-weight: 500;
         }
         .preview-grid-cell .platform-images-container img {
-            max-width: 80px; 
+            max-width: 100px; /* MODIFIED: Increased image size by 25% (80px -> 100px) */
             height: auto;
             display: block; 
         }
@@ -470,7 +470,7 @@
                 <option value="Intermitencia">[ Intermitencia ]</option>
                 <option value="Afectacion">[ Afectación ]</option>
                 <option value="Ventana de Mantenimiento">[ Ventana de Mantenimiento ]</option>
-            </select>
+                <option value="Informativa">[ Informativa ]</option> <option value="Blanco"></option> </select>
             <img alt="Imagen del tipo de notificación" class="dynamic-image" crossorigin="anonymous" id="imagenTipoNotificacion" src="" style="display: none;"/>
         </div>
         <div class="section-container">
@@ -504,7 +504,7 @@
                 <option value="Mi Claro Chile">Mi Claro Chile</option>
                 <option value="Mi Claro CENAM">Mi Claro CENAM</option>
                 <option value="Mi Claro Perú">Mi Claro Perú</option>
-	   </select>
+                <option value="Chatbot">Chatbot</option> <option value="TelcelBot">TelcelBot</option> </select>
             <div class="platform-images-container" id="plataformasSeleccionadasContainer"></div>
         </div>
         <div class="section-container">
@@ -962,13 +962,15 @@
             "Active Directory": "AD.png", "WiFi": "wifi.png", "Unifi": "unifi.png",
             "Splunk": "splunk.png", "Kibana": "kibana.png", "Dynatrace": "dynatrace.png", 
             "AppDynamics": "appdynamics.png", "Mi Claro Chile": "miclarochile.png", 
-            "Mi Claro CENAM": "miclarocenam.png", "Mi Claro Perú": "miclaroperu.png"
+            "Mi Claro CENAM": "miclarocenam.png", "Mi Claro Perú": "miclaroperu.png",
+            "Chatbot": "chatbot.png", "TelcelBot": "telcelbot.png" // ADDED
         };
 
         const tipoNotificacionImageMap = {
             "Inicio": "engrane.png", "Actualizacion": "engrane2.png", "Termino": "ok.png",
             "Restablecimiento": "ok.png", "Intermitencia": "warning.png", "Afectacion": "dead.png",
-            "Ventana de Mantenimiento": "engrane3.png"
+            "Ventana de Mantenimiento": "engrane3.png",
+            "Informativa": "informativa.png" // ADDED
         };
 
         let tipoNotificacionImageHtml = '';
@@ -1089,7 +1091,8 @@
         const imageMap = {
             "Inicio": "engrane.png", "Actualizacion": "engrane2.png", "Termino": "ok.png",
             "Restablecimiento": "ok.png", "Intermitencia": "warning.png", "Afectacion": "dead.png",
-            "Ventana de Mantenimiento": "engrane3.png"
+            "Ventana de Mantenimiento": "engrane3.png",
+            "Informativa": "informativa.png" // ADDED
         };
         if (selectedValue && imageMap[selectedValue]) {
             imagenTipoNotificacion.src = imageMap[selectedValue];
@@ -1115,7 +1118,8 @@
             "Active Directory": "AD.png", "WiFi": "wifi.png", "Unifi": "unifi.png",
             "Splunk": "splunk.png", "Kibana": "kibana.png", "Dynatrace": "dynatrace.png", 
             "AppDynamics": "appdynamics.png", "Mi Claro Chile": "miclarochile.png", 
-            "Mi Claro CENAM": "miclarocenam.png", "Mi Claro Perú": "miclaroperu.png"
+            "Mi Claro CENAM": "miclarocenam.png", "Mi Claro Perú": "miclaroperu.png",
+            "Chatbot": "chatbot.png", "TelcelBot": "telcelbot.png" // ADDED
         };
         selectedValues.forEach(platform => {
             if (imageMap[platform]) {
