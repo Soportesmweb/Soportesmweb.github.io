@@ -533,13 +533,15 @@
             <label for="tipoNotificacion">Tipo de Notificación:</label>
             <select class="focus:ring-indigo-500 focus:border-red-500" id="tipoNotificacion" required="">
                 <option value="">Selecciona un tipo</option>
-                <option value="Inicio">[ Inicio de Ventana de Mantenimiento ]</option>
-                <option value="Actualizacion">[ Actualización de Afectación ]</option>
-                <option value="Termino">[ Término de Ventana de Mantenimiento ]</option>
-                <option value="Restablecimiento">[ Restablecimiento de Afectación ]</option>
-                <option value="Intermitencia">[ Intermitencia ]</option>
                 <option value="Afectacion">[ Inicio de Afectación ]</option>
-                <option value="Ventana de Mantenimiento">[ Ventana de Mantenimiento ]</option>
+		<option value="Actualizacion">[ Actualización de Afectación ]</option>
+		<option value="Restablecimiento">[ Restablecimiento de Afectación ]</option>
+                <option value="Intermitencia">[ Intermitencia ]</option>
+		<option value="ActualizacionIntermitencia">[ Actualización de Intermitencia]</option>
+		<option value="Restablecimiento">[ Restablecimiento Intermitencia ]</option>
+		<option value="Ventana de Mantenimiento">[ Ventana de Mantenimiento Programada ]</option>
+		<option value="Inicio">[ Inicio de Ventana de Mantenimiento ]</option>
+                <option value="Termino">[ Término de Ventana de Mantenimiento ]</option>
                 <option value="Informativa">[ Informativa ]</option> <option value="Blanco"></option> </select>
             <img alt="Imagen del tipo de notificación" class="dynamic-image" crossorigin="anonymous" id="imagenTipoNotificacion" src="" style="display: none;"/>
         </div>
@@ -653,7 +655,6 @@
 		<option value="irene.lopez@speedymovil.com">irene.lopez@speedymovil.com</option>
 		<option value="monica.delacruz@speedymovil.com">monica.delacruz@speedymovil.com</option>
 		<option value="brandon.soto@speedymovil.com">brandon.soto@speedymovil.com</option>
-		<option value="jonathan.sumano@speedymovil.com">jonathan.sumano@speedymovil.com</option>
 		<option value="guadalupe.rodriguez@speedymovil.com">guadalupe.rodriguez@speedymovil.com</option>
 		<option value="jose.rosas@speedymovil.com">jose.rosas@speedymovil.com</option>
                 <option value="eduardo.sierra@speedymovil.com">eduardo.sierra@speedymovil.com</option>
@@ -1039,7 +1040,7 @@
         const tipoNotificacionImageMap = {
             "Inicio": "engrane.png", "Actualizacion": "engrane2.png", "Termino": "ok.png",
             "Restablecimiento": "ok.png", "Intermitencia": "warning.png", "Afectacion": "dead.png",
-            "Ventana de Mantenimiento": "engrane3.png",
+            "Ventana de Mantenimiento": "vm.png", "ActualizacionIntermitencia": "engrane3.png",
             "Informativa": "informativa.png" // ADDED
         };
 
@@ -1159,9 +1160,9 @@
         const imagenTipoNotificacion = document.getElementById('imagenTipoNotificacion');
         const selectedValue = tipoNotificacionSelect.value;
         const imageMap = {
-            "Inicio": "engrane.png", "Actualizacion": "engrane2.png", "Termino": "ok.png",
+            "Inicio": "engrane2.png", "Actualizacion": "engrane.png", "Termino": "ok.png",
             "Restablecimiento": "ok.png", "Intermitencia": "warning.png", "Afectacion": "dead.png",
-            "Ventana de Mantenimiento": "engrane3.png",
+            "Ventana de Mantenimiento": "vm.png", "ActualizacionIntermitencia": "engrane3.png",
             "Informativa": "informativa.png" // ADDED
         };
         if (selectedValue && imageMap[selectedValue]) {
