@@ -540,7 +540,7 @@
 		<option value="ActualizacionIntermitencia">[ Actualización de Intermitencia ]</option>
 		<option value="Restablecimiento">[ Restablecimiento Intermitencia ]</option>
 		<option value="Ventana de Mantenimiento">[ Ventana de Mantenimiento Programada ]</option>
-		<option value="Inicio">[ Inicio de Ventana de Mantenimiento ]</option>
+		<option value="InicioVM">[ Inicio de Ventana de Mantenimiento ]</option>
                 <option value="Termino">[ Término de Ventana de Mantenimiento ]</option>
                 <option value="Informativa">[ Informativa ]</option> <option value="Blanco"></option> </select>
             <img alt="Imagen del tipo de notificación" class="dynamic-image" crossorigin="anonymous" id="imagenTipoNotificacion" src="" style="display: none;"/>
@@ -1038,7 +1038,7 @@
         };
 
         const tipoNotificacionImageMap = {
-            "Inicio": "engrane.png", "Actualizacion": "engrane2.png", "Termino": "ok.png",
+            "InicioVM": "engrane2.png", "Actualizacion": "engrane2.png", "Termino": "ok.png",
             "Restablecimiento": "ok.png", "Intermitencia": "warning.png", "Afectacion": "dead.png",
             "Ventana de Mantenimiento": "vm.png", "ActualizacionIntermitencia": "engrane3.png",
             "ActualizacionAfectacion": "engrane.png","Informativa": "informativa.png" // ADDED
@@ -1160,7 +1160,7 @@
         const imagenTipoNotificacion = document.getElementById('imagenTipoNotificacion');
         const selectedValue = tipoNotificacionSelect.value;
         const imageMap = {
-            "Inicio": "engrane.png", "Actualizacion": "engrane2.png", "Termino": "ok.png",
+            "InicioVM": "engrane2.png", "Actualizacion": "engrane2.png", "Termino": "ok.png",
             "Restablecimiento": "ok.png", "Intermitencia": "warning.png", "Afectacion": "dead.png",
             "Ventana de Mantenimiento": "vm.png", "ActualizacionIntermitencia": "engrane3.png",
             "ActualizacionAfectacion": "engrane.png","Informativa": "informativa.png" // ADDED
