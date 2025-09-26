@@ -534,10 +534,10 @@
             <select class="focus:ring-indigo-500 focus:border-red-500" id="tipoNotificacion" required="">
                 <option value="">Selecciona un tipo</option>
                 <option value="Afectacion">[ Inicio de Afectación ]</option>
-		<option value="Actualizacion">[ Actualización de Afectación ]</option>
+		<option value="ActualizacionAfectacion">[ Actualización de Afectación ]</option>
 		<option value="Restablecimiento">[ Restablecimiento de Afectación ]</option>
-                <option value="Intermitencia">[ Intermitencia ]</option>
-		<option value="ActualizacionIntermitencia">[ Actualización de Intermitencia]</option>
+                <option value="Intermitencia">[ Inicio de Intermitencia ]</option>
+		<option value="ActualizacionIntermitencia">[ Actualización de Intermitencia ]</option>
 		<option value="Restablecimiento">[ Restablecimiento Intermitencia ]</option>
 		<option value="Ventana de Mantenimiento">[ Ventana de Mantenimiento Programada ]</option>
 		<option value="Inicio">[ Inicio de Ventana de Mantenimiento ]</option>
@@ -1041,7 +1041,7 @@
             "Inicio": "engrane.png", "Actualizacion": "engrane2.png", "Termino": "ok.png",
             "Restablecimiento": "ok.png", "Intermitencia": "warning.png", "Afectacion": "dead.png",
             "Ventana de Mantenimiento": "vm.png", "ActualizacionIntermitencia": "engrane3.png",
-            "Informativa": "informativa.png" // ADDED
+            "ActualizacionAfectacion": "engrane.png","Informativa": "informativa.png" // ADDED
         };
 
         let tipoNotificacionImageHtml = '';
@@ -1160,10 +1160,10 @@
         const imagenTipoNotificacion = document.getElementById('imagenTipoNotificacion');
         const selectedValue = tipoNotificacionSelect.value;
         const imageMap = {
-            "Inicio": "engrane2.png", "Actualizacion": "engrane.png", "Termino": "ok.png",
+            "Inicio": "engrane.png", "Actualizacion": "engrane2.png", "Termino": "ok.png",
             "Restablecimiento": "ok.png", "Intermitencia": "warning.png", "Afectacion": "dead.png",
             "Ventana de Mantenimiento": "vm.png", "ActualizacionIntermitencia": "engrane3.png",
-            "Informativa": "informativa.png" // ADDED
+            "ActualizacionAfectacion": "engrane.png","Informativa": "informativa.png" // ADDED
         };
         if (selectedValue && imageMap[selectedValue]) {
             imagenTipoNotificacion.src = imageMap[selectedValue];
