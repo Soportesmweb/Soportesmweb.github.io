@@ -541,7 +541,7 @@
 		<option value="InicioVM">[ Inicio de Ventana de Mantenimiento ]</option>
                 <option value="Termino">[ Término de Ventana de Mantenimiento ]</option>
                 <option value="Informativa">[ Informativa ]</option>
-                <option value="Blanco">-----</option>
+                <option value="Blanco">          </option>
             </select>
             <img alt="Imagen del tipo de notificación" class="dynamic-image" crossorigin="anonymous" id="imagenTipoNotificacion" src="" style="display: none;"/>
         </div>
@@ -818,7 +818,7 @@
         const afectacionTotalElement = document.getElementById('afectacionTotal');
 
         if (horaInicioInput && !horaFinInput) {
-            afectacionTotalElement.textContent = 'On Going';
+            afectacionTotalElement.textContent = 'En Curso';
             return;
         }
 
