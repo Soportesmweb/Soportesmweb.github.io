@@ -538,8 +538,10 @@
 		<option value="ActualizacionIntermitencia">[ Actualización de Intermitencia ]</option>
 		<option value="Restablecimiento">[ Restablecimiento Intermitencia ]</option>
 		<option value="Ventana de Mantenimiento">[ Ventana de Mantenimiento Programada ]</option>
-		<option value="InicioVM">[ Inicio de Ventana de Mantenimiento ]</option>
+		<option value="InicioVM">[ Inicia Ventana de Mantenimiento ]</option>
                 <option value="Termino">[ Término de Ventana de Mantenimiento ]</option>
+                <option value="Rollback">[ Rollback ]</option>
+                <option value="Cancelled">[ Cancelación ]</option>
                 <option value="Informativa">[ Informativa ]</option>
                 <option value="Blanco">          </option>
             </select>
@@ -1071,7 +1073,8 @@
             "InicioVM": "engrane2.png", "Actualizacion": "engrane2.png", "Termino": "ok.png",
             "Restablecimiento": "ok.png", "Intermitencia": "warning.png", "Afectacion": "dead.png",
             "Ventana de Mantenimiento": "vm.png", "ActualizacionIntermitencia": "engrane3.png",
-            "ActualizacionAfectacion": "engrane.png","Informativa": "informativa.png" // ADDED
+            "ActualizacionAfectacion": "engrane.png", "Rollback": "rollback.png",
+	    "Cancelled": "cancelled.png", "Informativa": "informativa.png" // ADDED
         };
 
         let tipoNotificacionImageHtml = '';
@@ -1200,7 +1203,8 @@
             "InicioVM": "engrane2.png", "Actualizacion": "engrane2.png", "Termino": "ok.png",
             "Restablecimiento": "ok.png", "Intermitencia": "warning.png", "Afectacion": "dead.png",
             "Ventana de Mantenimiento": "vm.png", "ActualizacionIntermitencia": "engrane3.png",
-            "ActualizacionAfectacion": "engrane.png","Informativa": "informativa.png" // ADDED
+            "ActualizacionAfectacion": "engrane.png", "Rollback": "rollback.png",
+	    "Cancelled": "cancelled.png", "Informativa": "informativa.png" // ADDED
         };
         if (selectedValue && imageMap[selectedValue]) {
             imagenTipoNotificacion.src = imageMap[selectedValue];
