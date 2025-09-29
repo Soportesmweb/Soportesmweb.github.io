@@ -538,12 +538,11 @@
 		<option value="ActualizacionIntermitencia">[ Actualización de Intermitencia ]</option>
 		<option value="Restablecimiento">[ Término de Intermitencia ]</option>
 		<option value="Ventana de Mantenimiento">[ Ventana de Mantenimiento Programada ]</option>
-		<option value="InicioVM">[ Inicia Ventana de Mantenimiento ]</option>
+		<option value="InicioVM">[ Inicio Ventana de Mantenimiento ]</option>
                 <option value="Termino">[ Término de Ventana de Mantenimiento ]</option>
                 <option value="Rollback">[ Rollback ]</option>
                 <option value="Cancelled">[ Cancelación ]</option>
                 <option value="Informativa">[ Informativa ]</option>
-                <option value="Termino">[ Término ]</option>
                 <option value="Blanco">          </option>
             </select>
             <img alt="Imagen del tipo de notificación" class="dynamic-image" crossorigin="anonymous" id="imagenTipoNotificacion" src="" style="display: none;"/>
@@ -699,7 +698,7 @@
                     </input></div>
                 <div class="country-item">
                     <input class="form-checkbox h-5 w-5 text-indigo-600 rounded" data-img="brasil.png" id="country_br" name="paisesAfectados" type="checkbox" value="Brasil"/>
-                    <img alt="Bandera de Brasil" crossorigin="anonymous" onerror="this.onerror=null;this.src='onerror.png';" src="brasil.png"/>
+                    <img alt="Bandera de Brasil" crossorigin="anonymous" onerror="this.onerror=null;this.src='brasil.png';" src="brasil.png"/>
                     <label class="ml-2 text-gray-700" for="country_br">Brasil</label>
                 </div>
                 <div class="country-item">
@@ -1170,30 +1169,61 @@
         document.getElementById('btnGuardarTXT').style.display = 'inline-block';
     }
     
-	function generarHtmlParaCorreo() {
-   	 const titulo = document.getElementById('tituloNotificacion').value.trim();
-    	const tipoNotifSelect = document.getElementById('tipoNotificacion');
-    	const tipoNotifTexto = tipoNotifSelect.options[tipoNotifSelect.selectedIndex].text;
-    	const plataformas = getSelectedOptions(document.getElementById('tipoSistema'));
-    	const servicios = getSelectedOptions(document.getElementById('servicioAfectadoSelect'));
-    	const correosAdicionales = getSelectedOptions(document.getElementById('listasDistribucionSelect'));
+    function generarHtmlParaCorreo() {
+        const titulo = document.getElementById('tituloNotificacion').value.trim();
+        const tipoNotifSelect = document.getElementById('tipoNotificacion');
+        const tipoNotifTexto = tipoNotifSelect.options[tipoNotifSelect.selectedIndex].text;
+        const tipoNotifValue = tipoNotifSelect.value;
+        const plataformas = getSelectedOptions(document.getElementById('tipoSistema'));
+        const servicios = getSelectedOptions(document.getElementById('servicioAfectadoSelect'));
+        const correosAdicionales = getSelectedOptions(document.getElementById('listasDistribucionSelect'));
 
-    	if (!titulo || plataformas.length === 0 || !tipoNotifTexto) {
-       	 alert('Función no disponible sin previsualización completada');
-       	 return;
-    }
+        if (!titulo || plataformas.length === 0 || !tipoNotifTexto) {
+            alert('Función no disponible sin previsualización completada');
+            return;
+        }
 
-    let tipoNotificacionAsunto = tipoNotifTexto.replace(/\[|\]/g, '').trim();
-
-    // Revisa si el texto contiene alguna de las palabras clave
-    if (tipoNotificacionAsunto.includes('Inicio') || tipoNotificacionAsunto.includes('Actualización') || tipoNotificacionAsunto.includes('Término')) {
-        tipoNotificacionAsunto = tipoNotificacionAsunto.split(' ')[0];
-    }
+        let primeraParteAsunto = '';
+        if (tipoNotifTexto.includes('Afectación')) {
+            primeraParteAsunto = 'Afectación';
+        } else if (tipoNotifTexto.includes('Intermitencia')) {
+            primeraParteAsunto = 'Intermitencia';
+        } else if (tipoNotifTexto.includes('Mantenimiento')) {
+            primeraParteAsunto = 'Mantenimiento';
+        } else if (tipoNotifTexto.includes('Rollback')) {
+            primeraParteAsunto = 'Rollback';
+        } else if (tipoNotifTexto.includes('Cancelación')) {
+            primeraParteAsunto = 'Cancelación';
+        } else if (tipoNotifTexto.includes('Informativa')) {
+            primeraParteAsunto = 'Informativa';
+        } else if (tipoNotifTexto.includes('Término')) {
+            primeraParteAsunto = 'Término';
+        }
     
-    const subject = `[${titulo}] - [${tipoNotificacionAsunto}] - [${plataformas.join(', ')}] - ${servicios.join(', ') || 'Por Definir'}`;
-    const todosLosDestinatarios = new Set(['soporte@speedymovil.com', ...correosAdicionales]);
-    const destinatariosString = Array.from(todosLosDestinatarios).join(',');
-    window.location.href = `mailto:${destinatariosString}?subject=${encodeURIComponent(subject)}`;
+        let segundaParteAsunto = '';
+        if (tipoNotifTexto.includes('Inicio de')) {
+            segundaParteAsunto = 'Inicio';
+        } else if (tipoNotifTexto.includes('Actualización')) {
+            segundaParteAsunto = 'Actualización';
+        } else if (tipoNotifTexto.includes('Término de')) {
+            segundaParteAsunto = 'Término';
+        } else if (tipoNotifTexto.includes('Ventana de Mantenimiento Programada')) {
+            primeraParteAsunto = 'Ventana de Mantenimiento Programada';
+            segundaParteAsunto = 'Ventana de Mantenimiento Programada';
+        } else if (tipoNotifTexto.includes('Inicia Ventana de Mantenimiento')) {
+            primeraParteAsunto = 'Ventana de Mantenimiento';
+            segundaParteAsunto = 'Inicio';
+        } else {
+            segundaParteAsunto = tipoNotifTexto.replace(/\[|\]/g, '').trim();
+        }
+
+        const serviciosAfectadosString = servicios.length > 0 ? servicios.join(', ') : 'Por Definir';
+        
+        const subject = `[Notificación de ${primeraParteAsunto}] - [${segundaParteAsunto}] - [${plataformas.join(', ')}] ${serviciosAfectadosString}`;
+
+        const todosLosDestinatarios = new Set(['soporte@speedymovil.com', ...correosAdicionales]);
+        const destinatariosString = Array.from(todosLosDestinatarios).join(',');
+        window.location.href = `mailto:${destinatariosString}?subject=${encodeURIComponent(subject)}`;
     }
 
     function handleTipoNotificacionChange() {
