@@ -533,10 +533,10 @@
                 <option value="">Selecciona un tipo</option>
                 <option value="Afectacion">[ Inicio de Afectación ]</option>
 		<option value="ActualizacionAfectacion">[ Actualización de Afectación ]</option>
-		<option value="Restablecimiento">[ Restablecimiento de Afectación ]</option>
+		<option value="Restablecimiento">[ Término de Afectación ]</option>
                 <option value="Intermitencia">[ Inicio de Intermitencia ]</option>
 		<option value="ActualizacionIntermitencia">[ Actualización de Intermitencia ]</option>
-		<option value="Restablecimiento">[ Restablecimiento Intermitencia ]</option>
+		<option value="Restablecimiento">[ Término de Intermitencia ]</option>
 		<option value="Ventana de Mantenimiento">[ Ventana de Mantenimiento Programada ]</option>
 		<option value="InicioVM">[ Inicia Ventana de Mantenimiento ]</option>
                 <option value="Termino">[ Término de Ventana de Mantenimiento ]</option>
@@ -552,7 +552,7 @@
             <label for="tipoSistema">Plataforma:</label>
             <select class="focus:ring-indigo-500 focus:border-red-500" id="tipoSistema" multiple="" required="" size="9">
                 <option value="SMI">SMI</option>
-                <option value="Mi Telcel">Mi Telcel</option>
+                <option value="Mi Telcel App">Mi Telcel App</option>
                 <option value="Mi Claro">Mi Claro</option>
                 <option value="Apigee">Apigee</option>
                 <option value="Contenedor">Contenedor</option>
@@ -1057,7 +1057,7 @@
         }));
 
         const plataformaImageMap = {
-            "SMI": "smi.png", "Mi Telcel": "mitelcel.png", "Mi Claro": "miclaro.png",
+            "SMI": "smi.png", "Mi Telcel App": "mitelcel.png", "Mi Claro": "miclaro.png",
             "Apigee": "apigee.png", "Contenedor": "contenedor.png", "HUB": "hub.png",
             "SMT": "smt.png", "Claro Música": "claromusica.png", "Claro Video": "clarovideo.png",
             "Netflix": "netflix.png", "Disney": "disney.png", "Amazon": "amazon.png",
@@ -1186,7 +1186,7 @@
     let tipoNotificacionAsunto = tipoNotifTexto.replace(/\[|\]/g, '').trim();
 
     // Revisa si el texto contiene alguna de las palabras clave
-    if (tipoNotificacionAsunto.includes('Inicio') || tipoNotificacionAsunto.includes('Actualización') || tipoNotificacionAsunto.includes('Restablecimiento')) {
+    if (tipoNotificacionAsunto.includes('Inicio') || tipoNotificacionAsunto.includes('Actualización') || tipoNotificacionAsunto.includes('Término')) {
         tipoNotificacionAsunto = tipoNotificacionAsunto.split(' ')[0];
     }
     
@@ -1222,7 +1222,7 @@
         const selectedValues = getSelectedOptions(tipoSistemaSelect);
         plataformasSeleccionadasContainer.innerHTML = '';
         const imageMap = {
-            "SMI": "smi.png", "Mi Telcel": "mitelcel.png", "Mi Claro": "miclaro.png",
+            "SMI": "smi.png", "Mi Telcel App": "mitelcel.png", "Mi Claro": "miclaro.png",
             "Apigee": "apigee.png", "Contenedor": "contenedor.png", "HUB": "hub.png",
             "SMT": "smt.png", "Claro Música": "claromusica.png", "Claro Video": "clarovideo.png",
             "Netflix": "netflix.png", "Disney": "disney.png", "Amazon": "amazon.png",
