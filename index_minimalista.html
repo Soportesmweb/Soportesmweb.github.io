@@ -1346,8 +1346,8 @@
         const originalMaxWidth = resultado.style.maxWidth;
         const originalWidth = resultado.style.width;
         resultado.style.border = 'none';
-        resultado.style.maxWidth = '800px';
-        resultado.style.width = '800px';
+        resultado.style.maxWidth = '750px';
+        resultado.style.width = '750px';
 
         html2canvas(resultado, { scale: 2, useCORS: true, allowTaint: false })
         .then(canvas => {
@@ -1376,8 +1376,8 @@
         const originalWidth = resultado.style.width;
         
         resultado.style.border = 'none';
-        resultado.style.maxWidth = '800px';
-        resultado.style.width = '800px';
+        resultado.style.maxWidth = '750px';
+        resultado.style.width = '750px';
 
         html2canvas(resultado, { useCORS: true, allowTaint: false, scale: 2 })
         .then(canvas => {
@@ -1692,5 +1692,6 @@ window.cargarDesdeTXT = function() {
 </body>
 
 </html>
+
 
 
