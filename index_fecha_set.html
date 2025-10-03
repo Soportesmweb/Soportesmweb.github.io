@@ -588,6 +588,10 @@
                 <option value="Cancelled">[ Cancelación ]</option>
                 <option value="Informativa">[ Informativa ]</option>
                 <option value="Termino">[ Término ]</option>
+                <option value="Update">[ Update ]</option>
+                <option value="Actualizacion">[ Actualización ]</option>
+                <option value="Upgrade">[ Upgrade ]</option>
+                <option value="Downgrade">[ Downgrade ]</option>
                 <option value="Blanco">          </option>
             </select>
             <img alt="Imagen del tipo de notificación" class="dynamic-image" crossorigin="anonymous" id="imagenTipoNotificacion" src="" style="display: none;"/>
@@ -625,6 +629,8 @@
                 <option value="Mi Claro CENAM">Mi Claro CENAM</option>
                 <option value="Mi Claro Perú">Mi Claro Perú</option>
                 <option value="Chatbot">Chatbot</option> <option value="TelcelBot">TelcelBot</option>
+                <option value="IT">Soporte IT</option>
+                <option value="Plataformas Internas">Plataformas Internas</option>
             </select>
             <div class="platform-images-container" id="plataformasSeleccionadasContainer"></div>
         </div>
@@ -1139,7 +1145,7 @@
             "Splunk": "splunk.png", "Kibana": "kibana.png", "Dynatrace": "dynatrace.png", 
             "AppDynamics": "appdynamics.png", "Mi Claro Chile": "miclarochile.png", 
             "Mi Claro CENAM": "miclarocenam.png", "Mi Claro Perú": "miclaroperu.png",
-            "Chatbot": "chatbot.png", "TelcelBot": "telcelbot.png" // ADDED
+            "Chatbot": "chatbot.png", "TelcelBot": "telcelbot.png", "IT": "it.png", "Plataformas Internas": "plataformas.png" // ADDED
         };
 
         const tipoNotificacionImageMap = {
@@ -1147,7 +1153,8 @@
             "Restablecimiento": "ok.png", "Intermitencia": "warning.png", "Afectacion": "dead.png",
             "Ventana de Mantenimiento": "vm.png", "ActualizacionIntermitencia": "engrane3.png",
             "ActualizacionAfectacion": "engrane.png", "Rollback": "rollback.png",
-	    "Cancelled": "cancelled.png", "Informativa": "informativa.png" // ADDED
+	    "Cancelled": "cancelled.png", "Informativa": "informativa.png","Actualizacion": "informativa.png", 
+	    "Update": "update.png", "Upgrade": "upgrade.png", "Downgrade": "downgrade.png" // ADDED
         };
 
         let tipoNotificacionImageHtml = '';
@@ -1307,7 +1314,8 @@
             "Restablecimiento": "ok.png", "Intermitencia": "warning.png", "Afectacion": "dead.png",
             "Ventana de Mantenimiento": "vm.png", "ActualizacionIntermitencia": "engrane3.png",
             "ActualizacionAfectacion": "engrane.png", "Rollback": "rollback.png",
-	    "Cancelled": "cancelled.png", "Informativa": "informativa.png" // ADDED
+	    "Cancelled": "cancelled.png", "Informativa": "informativa.png", "Actualizacion": "informativa.png", 
+	    "Update": "update.png", "Upgrade": "upgrade.png", "Downgrade": "downgrade.png" // ADDED
         };
         if (selectedValue && imageMap[selectedValue]) {
             imagenTipoNotificacion.src = imageMap[selectedValue];
@@ -1334,7 +1342,7 @@
             "Splunk": "splunk.png", "Kibana": "kibana.png", "Dynatrace": "dynatrace.png", 
             "AppDynamics": "appdynamics.png", "Mi Claro Chile": "miclarochile.png", 
             "Mi Claro CENAM": "miclarocenam.png", "Mi Claro Perú": "miclaroperu.png",
-            "Chatbot": "chatbot.png", "TelcelBot": "telcelbot.png" // ADDED
+            "Chatbot": "chatbot.png", "TelcelBot": "telcelbot.png", "IT": "it.png", "Plataformas Internas": "plataformas.png" // ADDED
         };
         selectedValues.forEach(platform => {
             if (imageMap[platform]) {
