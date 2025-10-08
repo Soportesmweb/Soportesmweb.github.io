@@ -473,6 +473,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
+
 /* 1) Logo de Speedy en la previsualización: pegado al margen del área blanca */
 #resultado .preview-grid .preview-grid-cell:first-child { 
   padding: 0 !important;
@@ -860,7 +861,7 @@
     };
 
     /**
-     * Función para formatear una cadena de fecha/hora ISO a formato DD/MM/AAAA HH:MM para MOSTRAR en la previsualización.
+     * Función para formatear una cadena de fecha/hora ISO a formato DD/MM/AAAA HH:MM AM/PM para MOSTRAR en la previsualización.
      * @param {string} dateString - Cadena de fecha y hora (e.g., "2023-10-26T15:30").
      * @returns {string} Fecha y hora formateada o '--'.
      */
@@ -876,12 +877,12 @@
             day: '2-digit',
             hour: '2-digit',
             minute: '2-digit',
-            hour12: false // Formato de 24 horas
+            hour12: true // <<< MODIFICADO: Usar formato de 12 horas con AM/PM
         };
         
-        // Usamos 'es-ES' para asegurar el orden día/mes/año
+        // Usamos 'es-ES' para asegurar el orden día/mes/año y AM/PM en minúsculas.
         // El replace es para asegurar que el separador sea un espacio, no una coma.
-        return date.toLocaleString('es-ES', options).replace(',', ' '); 
+        return date.toLocaleString('es-ES', options).replace(',', ' ').toLowerCase(); // <<< MODIFICADO: Se convierte a minúsculas
     }
 
 
@@ -1505,9 +1506,9 @@
         const horaInicioISO = document.getElementById('horaInicio').value; // AAAA-MM-DDTHH:MM
         const horaFinISO = document.getElementById('horaFin').value;       // AAAA-MM-DDTHH:MM
         
-        // --- CAPTURA DE HORAS EN FORMATO LOCAL PARA VISUALIZACIÓN EN TXT ---
-        const horaInicioLocal = formatDateTimeDDMMYYYY(horaInicioISO);
-        const horaFinLocal = formatDateTimeDDMMYYYY(horaFinISO);
+        // --- CAPTURA DE HORAS EN FORMATO LOCAL CON AM/PM PARA VISUALIZACIÓN EN TXT ---
+        const horaInicioLocal = formatDateTimeDDMMYYYY(horaInicioISO); // <<< Ahora incluye AM/PM
+        const horaFinLocal = formatDateTimeDDMMYYYY(horaFinISO);       // <<< Ahora incluye AM/PM
 
         const afectacionTotal = document.getElementById('afectacionTotal').textContent;
         const equiposResponsablesSeleccionados = getSelectedOptions(document.getElementById('equipoResponsableSelect'));
