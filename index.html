@@ -593,6 +593,7 @@
                 <option value="Actualizacion">[ Actualización ]</option>
                 <option value="Upgrade">[ Upgrade ]</option>
                 <option value="Downgrade">[ Downgrade ]</option>
+                <option value="Errata">[ Fé de erratas ]</option>
                 <option value="Blanco">          </option>
             </select>
             <img alt="Imagen del tipo de notificación" class="dynamic-image" crossorigin="anonymous" id="imagenTipoNotificacion" src="" style="display: none;"/>
@@ -1155,7 +1156,7 @@
             "Ventana de Mantenimiento": "vm.png", "ActualizacionIntermitencia": "engrane3.png",
             "ActualizacionAfectacion": "engrane.png", "Rollback": "rollback.png", "Estabilizacion": "estabilizacion.png",
 	    "Cancelled": "cancelled.png", "Informativa": "informativa.png","Actualizacion": "informativa.png", 
-	    "Update": "update.png", "Upgrade": "upgrade.png", "Downgrade": "downgrade.png" // ADDED
+	    "Update": "update.png", "Upgrade": "upgrade.png", "Downgrade": "downgrade.png", "Errata": "errata.png" // ADDED
         };
 
         let tipoNotificacionImageHtml = '';
@@ -1316,7 +1317,7 @@
             "Ventana de Mantenimiento": "vm.png", "ActualizacionIntermitencia": "engrane3.png",
             "ActualizacionAfectacion": "engrane.png", "Rollback": "rollback.png", "Estabilizacion": "estabilizacion.png",
 	    "Cancelled": "cancelled.png", "Informativa": "informativa.png", "Actualizacion": "informativa.png", 
-	    "Update": "update.png", "Upgrade": "upgrade.png", "Downgrade": "downgrade.png" // ADDED
+	    "Update": "update.png", "Upgrade": "upgrade.png", "Downgrade": "downgrade.png", "Errata": "errata.png" // ADDED
         };
         if (selectedValue && imageMap[selectedValue]) {
             imagenTipoNotificacion.src = imageMap[selectedValue];
