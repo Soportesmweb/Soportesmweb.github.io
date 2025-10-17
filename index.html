@@ -906,7 +906,7 @@
         const horaFinInput = document.getElementById('horaFin').value;
         
         if (!horaInicioInput && !horaFinInput) {
-             return 'Por Definir'; // Base: si no hay horas, es sin afectación.
+             return '-'; // Base: si no hay horas, es sin afectación.
         }
 
         if (horaInicioInput && !horaFinInput) {
