@@ -569,7 +569,7 @@
     <form class="space-y-6" id="generadorForm">
         <div class="section-container">
             <label for="tituloNotificacion">Título de la Notificación:</label>
-            <textarea class="focus:ring-indigo-500 focus:border-red-500" id="tituloNotificacion" required=""></textarea>
+            <textarea class="focus:ring-indigo-500 focus:border-red-500" id="tituloNotificacion" required="" placeholder="Escribe el Título de la Notificación (Obligatorio)..."></textarea>
         </div>
         <div class="section-container">
             <label for="tipoNotificacion">Tipo de Notificación:</label>
@@ -640,8 +640,7 @@
         </div>
         <div class="section-container">
     		<label for="descripcionCorta">¿En qué consiste?</label>
-   		 <textarea class="focus:ring-indigo-500 focus:border-red-500" id="descripcionCorta">
-		 </textarea>
+   		 <textarea class="focus:ring-indigo-500 focus:border-red-500" id="descripcionCorta" placeholder="Describe en que consiste el incidente o situación..."></textarea>
 	</div>
         <div class="section-container" style="display: none;">
             <label class="font-bold" for="consideracionesServicio">Consideraciones sobre el servicio:</label>
@@ -670,20 +669,28 @@
         <div class="section-container">
             <label class="font-bold" for="equipoResponsableText">Equipo Responsable:</label>
             <div class="flex items-center gap-4 mb-4">
-                <input class="flex-grow focus:ring-indigo-500 focus:border-red-500 mb-0" id="equipoResponsableText" placeholder="Introduce nuevo equipo" type="text"/>
+                <input class="flex-grow focus:ring-indigo-500 focus:border-red-500 mb-0" id="equipoResponsableText" placeholder="Introduce nuevo equipo responsable (No Listado)" type="text"/>
                 <button class="px-4 py-2 text-sm bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors duration-200" onclick="agregarEquipoResponsable()" type="button">Agregar</button>
             </div>
             <select class="focus:ring-indigo-500 focus:border-red-500" id="equipoResponsableSelect" multiple="" size="10">
+                <option value="SPEEDYMOVIL">SPEEDYMOVIL</option>
                 <option value="CITI">CITI</option>
                 <option value="TELCEL">TELCEL</option>
                 <option value="APIGEE">APIGEE</option>
-                <option value="BACKEND">BACKEND</option>
-                <option value="SPEEDYMOVIL">SPEEDYMOVIL</option>
                 <option value="SSO">SSO</option>
                 <option value="TANGO">TANGO</option>
                 <option value="HUAWEI">HUAWEI</option>
                 <option value="ISVA">ISVA</option>
-		<option value="INFORMATICA">INFORMÁTICA TELCEL</option>
+		<option value="INFORMÁTICA TELCEL">INFORMÁTICA TELCEL</option>
+		<option value="SOPORTE INTERNO">SOPORTE INTERNO</option>
+		<option value="DESARROLLO BACKEND">DESARROLLO APPS BACKEND</option>
+		<option value="DESARROLLO FRONTEND">DESARROLLO APPS FRONTEND</option>
+		<option value="INTEGRACIÓN SPEEDYMOVIL">INTEGRACIÓN SPEEDYMOVIL</option>
+		<option value="CLARO CHILE">CLARO CHILE</option>
+		<option value="CLARO PERÚ">CLARO PERÚ</option>
+		<option value="CLARO ARGENTINA">CLARO ARGENTINA</option>
+		<option value="CLARO COLOMBIA">CLARO COLOMBIA</option>
+		<option value="CLARO CENAM">CLARO CENAM</option>
             </select>
         </div>
         <div class="section-container">
@@ -693,7 +700,7 @@
         <div class="section-container" id="serviciosAfectadosSection">
             <label class="font-bold" for="servicioAfectadoText">Servicios Afectados:</label>
             <div class="flex items-center gap-4 mb-4">
-                <input class="flex-grow focus:ring-indigo-500 focus:border-red-500 mb-0" id="servicioAfectadoText" placeholder="Introduce nuevo servicio" type="text"/>
+                <input class="flex-grow focus:ring-indigo-500 focus:border-red-500 mb-0" id="servicioAfectadoText" placeholder="Introduce nuevo servicio afectado (No Listado)" type="text"/>
                 <button class="px-4 py-2 text-sm bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors duration-200" onclick="agregarServicioAfectado()" type="button">Agregar</button>
             </div>
             <select class="focus:ring-indigo-500 focus:border-red-500" id="servicioAfectadoSelect" multiple="" size="5">
@@ -899,7 +906,7 @@
         const horaFinInput = document.getElementById('horaFin').value;
         
         if (!horaInicioInput && !horaFinInput) {
-             return 'Sin Afectación'; // Base: si no hay horas, es sin afectación.
+             return 'Por Definir'; // Base: si no hay horas, es sin afectación.
         }
 
         if (horaInicioInput && !horaFinInput) {
