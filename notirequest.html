@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport">
+    <title>Solicitud de Notificación</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+            
+            /* El body ocupa el 100% del ancho para que el fondo gris se extienda */
+            width: 100%; 
+            min-height: 100vh;
+            /* Eliminamos el padding horizontal del body, lo maneja el container */
+            padding: 30px 200px; 
+            display: block; 
+            margin: 0; /* Asegura que no haya márgenes predeterminados */
+        }
+        .container {
+            background-color: #ffffff;
+            /* CRÍTICO: Agregamos padding interno al container */
+            padding: 20px; 
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            
+            /* CRÍTICO: Define el ancho deseado y el centrado */
+            width: 60%; 
+            /* Se añade un límite para que no sea demasiado ancho en pantallas grandes */
+            max-width: 600px; 
+            /* CRÍTICO: Centra el elemento de bloque de 70% de ancho */
+            margin: 0 auto; 
+            
+            position: relative;
+        }
+        
+        .logo {
+            position: absolute;
+            top: 3px;
+            right: 20px;
+            max-width: 250px;
+            height: auto;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        input[type="text"], input[type="datetime-local"], textarea, select {
+            width: 100%; 
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        button {
+            /* Color del Botón (Rojo Vibrante) */
+            background-color: #ef4444; 
+            color: white;
+            padding: 14px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #dc2626;
+            transform: translateY(-2px);
+        }
+        .section {
+            background-color: #e0f2fe;
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 16px; 
+        }
+        /* Estilos para la sección de checkboxes */
+        .countries-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="speedymovil.png" alt="SpeedyMovil Logo" class="logo">
+        <h1 class="text-3xl font-bold text-gray-800 mb-8 text-center">Solicitud de Notificación a Soporte</h1>
+
+        <form id="notificacionForm">
+            <div class="section">
+                <label for="tipo">Tipo de Notificación</label>
+                <input type="text" id="tipo" required>
+            </div>
+
+            <div class="section">
+                <label for="titulo">Título de la Notificación</label>
+                <input type="text" id="titulo" required>
+            </div>
+
+            <div class="section">
+                <label for="crq">CRQ</label>
+                <input type="text" id="crq" required>
+            </div>
+
+            <div class="section">
+                <label for="plataforma">Plataforma</label>
+                <input type="text" id="plataforma" required>
+            </div>
+
+            <div class="section">
+                <label for="horaInicio">Hora de Inicio</label>
+                <input type="datetime-local" id="horaInicio" required>
+            </div>
+
+            <div class="section">
+                <label for="horaFin">Hora de Término</label>
+                <input type="datetime-local" id="horaFin" required>
+            </div>
+
+            <div class="section">
+                <label for="afectacion">Afectación</label>
+                <select id="afectacion" required>
+                    <option value="" disabled selected>Selecciona...</option>
+                    <option value="Sí">Sí</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+
+            <div class="section">
+                <label for="descripcion">Descripción de la Notificación</label>
+                <textarea id="descripcion" rows="4" required></textarea>
+            </div>
+
+            <div class="section">
+                <label for="responsables">Responsable(s)</label>
+                <input type="text" id="responsables" placeholder="Separar múltiples con comas" required>
+            </div>
+
+            <div class="section">
+                <label for="servicios">Servicio(s) Afectado(s)</label>
+                <input type="text" id="servicios" placeholder="Separar múltiples con comas" required>
+            </div>
+
+            <div class="section">
+                <label for="destinatarios">Destinatarios</label>
+                <input type="text" id="destinatarios" placeholder="Separar múltiples correos con comas" required>
+            </div>
+
+            <div class="section">
+                <label>Países Afectados</label>
+                <div class="checkbox-item mb-2">
+                    <input type="checkbox" id="selectAllCountries" class="mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                    <label for="selectAllCountries" class="font-bold mb-0">Seleccionar Todos los Países</label>
+                </div>
+                
+                <div class="countries-grid">
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="country" value="Argentina" id="country_argentina" class="mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                        <label for="country_argentina" class="mb-0">Argentina</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="country" value="Brasil" id="country_brasil" class="mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                        <label for="country_brasil" class="mb-0">Brasil</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="country" value="Chile" id="country_chile" class="mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                        <label for="country_chile" class="mb-0">Chile</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="country" value="Colombia" id="country_colombia" class="mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                        <label for="country_colombia" class="mb-0">Colombia</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="country" value="Costa Rica" id="country_costarica" class="mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                        <label for="country_costarica" class="mb-0">Costa Rica</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="country" value="Ecuador" id="country_ecuador" class="mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                        <label for="country_ecuador" class="mb-0">Ecuador</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="country" value="El Salvador" id="country_elsalvador" class="mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                        <label for="country_elsalvador" class="mb-0">El Salvador</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="country" value="Guatemala" id="country_guatemala" class="mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                        <label for="country_guatemala" class="mb-0">Guatemala</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="country" value="Honduras" id="country_honduras" class="mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                        <label for="country_honduras" class="mb-0">Honduras</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="country" value="México" id="country_mexico" class="mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                        <label for="country_mexico" class="mb-0">México</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="country" value="Nicaragua" id="country_nicaragua" class="mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                        <label for="country_nicaragua" class="mb-0">Nicaragua</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="country" value="Panamá" id="country_panama" class="mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                        <label for="country_panama" class="mb-0">Panamá</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="country" value="Paraguay" id="country_paraguay" class="mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                        <label for="country_paraguay" class="mb-0">Paraguay</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="country" value="Perú" id="country_peru" class="mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                        <label for="country_peru" class="mb-0">Perú</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="country" value="Puerto Rico" id="country_puertorico" class="mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                        <label for="country_puertorico" class="mb-0">Puerto Rico</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="country" value="República Dominicana" id="country_dominicana" class="mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                        <label for="country_dominicana" class="mb-0">República Dominicana</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="country" value="Uruguay" id="country_uruguay" class="mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                        <label for="country_uruguay" class="mb-0">Uruguay</label>
+                    </div>
+                </div>
+            </div>
+            <button type="button" onclick="generarCorreo()">Generar Correo</button>
+        </form>
+    </div>
+
+    <script>
+        // Lógica para "Seleccionar Todos"
+        const selectAllCheckbox = document.getElementById('selectAllCountries');
+        const countryCheckboxes = document.querySelectorAll('input[name="country"]');
+
+        selectAllCheckbox.addEventListener('change', function() {
+            countryCheckboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
+
+        countryCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                if (!this.checked) {
+                    selectAllCheckbox.checked = false;
+                } else {
+                    const allChecked = Array.from(countryCheckboxes).every(c => c.checked);
+                    selectAllCheckbox.checked = allChecked;
+                }
+            });
+        });
+
+        function generarCorreo() {
+            const form = document.getElementById('notificacionForm');
+            
+            // Verificación de campos obligatorios
+            if (!form.checkValidity()) {
+                const tempSubmit = document.createElement('button');
+                form.appendChild(tempSubmit);
+                tempSubmit.click();
+                form.removeChild(tempSubmit);
+                return;
+            }
+
+            // Recuperación de valores
+            const tipo = document.getElementById('tipo').value.trim();
+            const titulo = document.getElementById('titulo').value.trim();
+            const crq = document.getElementById('crq').value.trim();
+            const plataforma = document.getElementById('plataforma').value.trim();
+            const horaInicio = document.getElementById('horaInicio').value;
+            const horaFin = document.getElementById('horaFin').value;
+            const afectacion = document.getElementById('afectacion').value;
+            const descripcion = document.getElementById('descripcion').value.trim();
+            const responsables = document.getElementById('responsables').value.trim();
+            const servicios = document.getElementById('servicios').value.trim();
+            const destinatarios = document.getElementById('destinatarios').value.trim(); 
+
+            // Recoger países seleccionados
+            const selectedCountries = Array.from(countryCheckboxes)
+                .filter(checkbox => checkbox.checked)
+                .map(checkbox => checkbox.value)
+                .join(', ');
+
+            // Comprobar si se seleccionó al menos un país
+            if (selectedCountries.length === 0) {
+                 alert("Por favor, selecciona al menos un País Afectado.");
+                 return;
+            }
+            
+            const ahora = new Date();
+            const fecha = ahora.toLocaleDateString();
+            const hora = ahora.toLocaleTimeString();
+
+            // Separador solicitado
+            const separador = "\n==============\n";
+            
+            let cuerpo = `Tipo de Notificación: ${tipo}${separador}`;
+            cuerpo += `Título: ${titulo}${separador}`;
+            cuerpo += `CRQ: ${crq}${separador}`;
+            cuerpo += `Plataforma: ${plataforma}${separador}`;
+            cuerpo += `Hora de Inicio: ${horaInicio}${separador}`;
+            cuerpo += `Hora de Término: ${horaFin}${separador}`;
+            cuerpo += `Afectación: ${afectacion}${separador}`;
+            cuerpo += `Descripción: ${descripcion}${separador}`;
+            cuerpo += `Responsable(s): ${responsables}${separador}`;
+            cuerpo += `Servicio(s) Afectado(s): ${servicios}${separador}`;
+            cuerpo += `Destinatarios (C.C.): ${destinatarios}${separador}`;
+            cuerpo += `País(es) Afectado(s): ${selectedCountries}${separador}`; // Campo de países al final
+
+            cuerpo += `---\nGenerado el ${fecha} a las ${hora}`;
+
+            const subject = encodeURIComponent(`Solicitud de Notificación ${titulo} ${fecha} ${hora}`);
+            const body = encodeURIComponent(cuerpo);
+
+            // Destinatario fijo: soporte@speedymovil.com
+            const to = 'soporte@speedymovil.com'; 
+
+            window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
+        }
+    </script>
+</body>
