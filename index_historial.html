@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Generador de Notificaciones - Con Historial</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body { font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:#f0f2f5; padding:20px; }
+        .container { background:#fff; padding:28px; border-radius:12px; box-shadow:0 10px 25px rgba(0,0,0,0.08); max-width:980px; margin:0 auto; position:relative; }
+        .logo-img { position:absolute; top:12px; left:26px; height:72px; object-fit:contain; }
+        #resultado { border-radius:10px; padding:18px; min-height:160px; background:#f8fafc; margin-top:18px; box-sizing:border-box; width:700px; max-width:100%; margin-left:auto; margin-right:auto; }
+        .card { background:white; border-radius:10px; box-shadow:0 6px 15px rgba(0,0,0,0.06); padding:14px; }
+        .history-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:12px; margin-top:12px; }
+        .btn { padding:10px 14px; border-radius:8px; font-weight:600; cursor:pointer; }
+        .btn-primary { background:#3a73bd; color:white; }
+        .btn-ghost { background:#e2e8f0; color:#1a202c; }
+        .small { padding:6px 8px; font-size:0.85rem; }
+        .meta { font-size:0.85rem; color:#4a5568; }
+        .tag { display:inline-block; background:#e6f2ff; color:#1e3a8a; padding:4px 8px; border-radius:999px; font-size:0.75rem; margin-right:6px; }
+        .hidden { display:none; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Simple login overlay (kept from original) -->
+    <script>
+        const USERNAME = "admin"; const PASSWORD = "12345";
+        document.addEventListener('DOMContentLoaded', ()=> {
+            if(!sessionStorage.getItem('authed')) {
+                document.body.insertAdjacentHTML('afterbegin', `
+                    <div id="loginOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(240,242,245,0.98);display:flex;justify-content:center;align-items:center;z-index:9999;">
+                        <div style="background:#fff;padding:28px;border-radius:12px;box-shadow:0 5px 20px rgba(0,0,0,0.2);text-align:center;max-width:360px;">
+                            <h2 style="margin-bottom:20px;color:#333;">Acceso Restringido</h2>
+                            <input type="text" id="loginUser" placeholder="Usuario" style="width:100%;margin-bottom:10px;padding:10px;border:1px solid #ccc;border-radius:6px;"><br>
+                            <input type="password" id="loginPass" placeholder="Contraseña" style="width:100%;margin-bottom:15px;padding:10px;border:1px solid #ccc;border-radius:6px;"><br>
+                            <button id="btnLogin" class="btn btn-primary" style="width:100%;">Entrar</button>
+                            <p id="loginError" style="color:red;margin-top:12px;display:none;">Usuario o contraseña incorrectos</p>
+                        </div>
+                    </div>
+                `);
+                document.getElementById('btnLogin').addEventListener('click', ()=>{
+                    const u=document.getElementById('loginUser').value; const p=document.getElementById('loginPass').value;
+                    if(u===USERNAME && p===PASSWORD){ sessionStorage.setItem('authed','1'); document.getElementById('loginOverlay').remove(); }
+                    else { document.getElementById('loginError').style.display='block'; }
+                });
+            }
+        });
+    </script>
+
+    <img alt="Logo" class="logo-img" src="speedylogo.png" onerror="this.onerror=null;this.src='onerror.png';"/>
+    <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Generador de Notificaciones Interactivo</h1>
+
+    <!-- Form -->
+    <form id="generadorForm" class="space-y-6">
+        <div class="card">
+            <label class="font-semibold">Título de la Notificación</label>
+            <textarea id="tituloNotificacion" class="w-full mt-2 p-3 border rounded" placeholder="Escribe el título..." required></textarea>
+            <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="font-semibold">Tipo</label>
+                    <select id="tipoNotificacion" class="w-full p-2 border rounded mt-2">
+                        <option value="">Selecciona un tipo</option>
+                        <option value="Afectacion">[ Inicio de Afectación ]</option>
+                        <option value="ActualizacionAfectacion">[ Actualización de Afectación ]</option>
+                        <option value="Restablecimiento">[ Término de Afectación ]</option>
+                        <option value="Intermitencia">[ Inicio de Intermitencia ]</option>
+                        <option value="Ventana de Mantenimiento">[ Ventana de Mantenimiento Programada ]</option>
+                        <option value="Errata">[ Fé de erratas ]</option>
+                        <option value="Informativa">[ Informativa ]</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="font-semibold">Plataformas (Ctrl/Cmd+Click múltiple)</label>
+                    <select id="tipoSistema" multiple size="6" class="w-full p-2 border rounded mt-2">
+                        <option value="SMI">SMI</option>
+                        <option value="Mi Telcel App">Mi Telcel App</option>
+                        <option value="Apigee">Apigee</option>
+                        <option value="HUB">HUB</option>
+                        <option value="SMS HUB">SMS HUB</option>
+                        <option value="CMP">CMP</option>
+                        <option value="Internet">Internet</option>
+                        <option value="Active Directory">Active Directory</option>
+                        <option value="WiFi">WiFi</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="font-semibold">Horario - Inicio / Fin</label>
+                    <input id="horaInicio" type="datetime-local" class="w-full p-2 border rounded mt-2"/>
+                    <input id="horaFin" type="datetime-local" class="w-full p-2 border rounded mt-2"/>
+                    <div class="mt-2"><label class="font-semibold">Afectación Total:</label><div id="afectacionTotal" class="meta">Sin Afectación</div></div>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <label class="font-semibold">Descripción Corta</label>
+                <textarea id="descripcionCorta" class="w-full mt-2 p-3 border rounded" placeholder="Describe en que consiste..."></textarea>
+            </div>
+
+            <div class="mt-4 flex flex-wrap gap-3">
+                <button type="button" class="btn btn-primary" id="btnGenerar">Generar Notificación y Previsualizar</button>
+                <button type="button" class="btn btn-ghost" id="btnExportImagen">Exportar como Imagen</button>
+                <button type="button" class="btn btn-ghost" id="btnExportPDF">Exportar como PDF</button>
+                <button type="button" class="btn btn-ghost" id="btnGuardarTXT">Guardar como TXT</button>
+                <button type="button" class="btn btn-ghost" id="btnCargarTXT">Cargar desde TXT</button>
+                <input type="file" id="inputCargarTXT" accept=".txt" style="display:none;">
+            </div>
+        </div>
+    </form>
+
+    <hr class="my-8"/>
+
+    <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Previsualización de Notificación</h2>
+    <div id="resultado" class="card">
+        <p class="meta text-center">La previsualización aparecerá aquí al generar la notificación.</p>
+    </div>
+
+    <!-- Show/Hide history button (below preview) -->
+    <div class="mt-4 flex justify-center">
+        <button id="toggleHistoryBtn" class="btn btn-primary small">📚 Mostrar Historial</button>
+    </div>
+
+    <!-- History container (hidden by default) -->
+    <div id="historyContainer" class="mt-6 hidden">
+        <h3 class="text-xl font-bold mb-3">Historial de Notificaciones</h3>
+        <div id="historyGrid" class="history-grid"></div>
+        <div class="mt-4 flex gap-3">
+            <button id="btnClearAll" class="btn btn-ghost small">🗑️ Eliminar Todo</button>
+            <span class="meta">Las notificaciones se guardan localmente en tu navegador (localStorage).</span>
+        </div>
+    </div>
+
+</div>
+
+<script>
+/* ---------------------------
+   Utilidades y mapeos visuales
+   --------------------------- */
+function getSelectedOptions(select) {
+    const out = [];
+    for (let i=0;i<select.options.length;i++) {
+        if (select.options[i].selected) out.push(select.options[i].value);
+    }
+    return out;
+}
+
+function formatDateTimeDDMMYYYY(dateString) {
+    if (!dateString) return '--';
+    const d = new Date(dateString);
+    if (isNaN(d.getTime())) return '--';
+    const opts = { year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', hour12:true };
+    return d.toLocaleString('es-ES', opts).replace(',', ' ');
+}
+
+function getDuracionCalculada() {
+    const inicio = document.getElementById('horaInicio').value;
+    const fin = document.getElementById('horaFin').value;
+    if (!inicio && !fin) return 'Sin Afectación';
+    if (inicio && !fin) return 'En Curso';
+    if (!inicio || !fin) return 'Sin Afectación';
+    const f1 = new Date(inicio), f2 = new Date(fin);
+    if (isNaN(f1)||isNaN(f2)) return 'Fechas inválidas';
+    if (f2 < f1) return 'La hora de fin no puede ser anterior a la de inicio';
+    const diffMs = f2.getTime() - f1.getTime();
+    if (diffMs === 0) return 'Sin Afectación';
+    let totalMin = Math.floor(diffMs / 60000);
+    const dias = Math.floor(totalMin / (60*24)); totalMin %= (60*24);
+    const horas = Math.floor(totalMin / 60); const minutos = totalMin % 60;
+    let res = [];
+    if (dias>0) res.push(dias + (dias===1?' día':' días'));
+    if (horas>0) res.push(horas + (horas===1?' hora':' horas'));
+    if (minutos>0) res.push(minutos + (minutos===1?' minuto':' minutos'));
+    return res.length? res.join(' - '): 'Menos de un minuto';
+}
+
+/* ---------------------------
+   LocalStorage: CRUD historial
+   --------------------------- */
+const STORAGE_KEY = 'notificaciones_historial_v1';
+
+function saveNotificationToStorage(obj) {
+    const list = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    list.push(obj);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+}
+
+function getNotificationsFromStorage() {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+}
+
+function setNotificationsToStorage(list) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+}
+
+/* ---------------------------
+   Render preview + Save automatically
+   --------------------------- */
+function generarYMostrarResultado() {
+    const titulo = document.getElementById('tituloNotificacion').value.trim();
+    const tipoSel = document.getElementById('tipoNotificacion');
+    const tipoVal = tipoSel.value;
+    const tipoTexto = tipoSel.options[tipoSel.selectedIndex] ? tipoSel.options[tipoSel.selectedIndex].text : '';
+    const plataformas = getSelectedOptions(document.getElementById('tipoSistema'));
+    const descripcion = document.getElementById('descripcionCorta').value.trim();
+    const horaInicio = document.getElementById('horaInicio').value;
+    const horaFin = document.getElementById('horaFin').value;
+    const afectacionTotal = getDuracionCalculada();
+
+    // plantilla simple para previsualizar
+    const previewHtml = `
+        <div class="preview-block">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div>
+                    <div style="font-weight:700;color:#1e3a8a;">${tipoTexto}</div>
+                    <h3 style="margin:6px 0 0 0;color:#2b6cb0;">${titulo ? titulo.replace(/\n/g,'<br>') : '<i>Sin título</i>'}</h3>
+                </div>
+                <div style="text-align:right;">
+                    <div class="meta">Generado: ${formatDateTimeDDMMYYYY(new Date().toISOString())}</div>
+                    <div class="tag">${plataformas.join(', ') || 'Sin plataformas'}</div>
+                </div>
+            </div>
+            <hr style="margin:12px 0;">
+            <div style="display:flex;gap:18px;flex-wrap:wrap;">
+                <div style="flex:1;min-width:220px;">
+                    <strong>¿En qué consiste?</strong>
+                    <p style="margin-top:6px;">${descripcion || '<i>Sin descripción</i>'}</p>
+                </div>
+                <div style="min-width:220px;">
+                    <strong>Horario</strong>
+                    <p style="margin:6px 0;"><strong>Inicio:</strong> ${formatDateTimeDDMMYYYY(horaInicio)}</p>
+                    <p style="margin:6px 0;"><strong>Fin:</strong> ${formatDateTimeDDMMYYYY(horaFin)}</p>
+                    <p style="margin:6px 0;"><strong>Afectación Total:</strong><br>${afectacionTotal}</p>
+                </div>
+            </div>
+        </div>
+    `;
+    document.getElementById('resultado').innerHTML = previewHtml;
+
+    // Build object to save
+    const nowIso = new Date().toISOString();
+    const notification = {
+        id: 'n_' + Date.now(),
+        createdAt: nowIso,
+        titulo: titulo,
+        tipo: tipoVal,
+        tipoTexto: tipoTexto,
+        plataformas: plataformas,
+        descripcion: descripcion,
+        horaInicio: horaInicio,
+        horaFin: horaFin,
+        afectacionTotal: afectacionTotal
+    };
+
+    // Save automatically
+    saveNotificationToStorage(notification);
+    // Re-render history if visible
+    if (!document.getElementById('historyContainer').classList.contains('hidden')) {
+        renderHistoryCards();
+    }
+
+    // show export/save buttons (they exist in DOM)
+    document.getElementById('btnExportImagen').style.display = 'inline-block';
+    document.getElementById('btnExportPDF').style.display = 'inline-block';
+    document.getElementById('btnGuardarTXT').style.display = 'inline-block';
+}
+
+/* ---------------------------
+   History UI
+   --------------------------- */
+function renderHistoryCards() {
+    const grid = document.getElementById('historyGrid');
+    grid.innerHTML = '';
+    const list = getNotificationsFromStorage();
+    // sort by date desc (most recent first)
+    list.sort((a,b) => (new Date(b.createdAt)).getTime() - (new Date(a.createdAt)).getTime());
+    if (list.length === 0) {
+        grid.innerHTML = '<div class="meta">No hay notificaciones guardadas.</div>';
+        return;
+    }
+    list.forEach(item => {
+        const el = document.createElement('div');
+        el.className = 'card';
+        el.innerHTML = `
+            <div style="display:flex;justify-content:space-between;align-items:start;gap:8px;">
+                <div style="flex:1;">
+                    <div style="display:flex;gap:8px;align-items:center;">
+                        <div style="font-weight:700;color:#1e3a8a;">${item.tipoTexto || '—'}</div>
+                        <div class="meta">${formatDateTimeDDMMYYYY(item.createdAt)}</div>
+                    </div>
+                    <h4 style="margin:8px 0;color:#2b6cb0">${item.titulo || '<i>Sin título</i>'}</h4>
+                    <div class="meta">Plataformas: ${item.plataformas && item.plataformas.length ? item.plataformas.join(', ') : '—'}</div>
+                    <p style="margin-top:8px;color:#4a5568;">${(item.descripcion && item.descripcion.length>180) ? item.descripcion.slice(0,180)+'...' : (item.descripcion || '<i>Sin descripción</i>')}</p>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                    <button class="btn small btn-primary" data-action="load" data-id="${item.id}">🔁 Cargar</button>
+                    <button class="btn small btn-ghost" data-action="delete" data-id="${item.id}">🗑️ Eliminar</button>
+                </div>
+            </div>
+        `;
+        grid.appendChild(el);
+    });
+
+    // attach handlers
+    grid.querySelectorAll('button[data-action="load"]').forEach(b => {
+        b.addEventListener('click', (e) => {
+            const id = e.currentTarget.dataset.id;
+            loadNotificationToForm(id);
+        });
+    });
+    grid.querySelectorAll('button[data-action="delete"]').forEach(b => {
+        b.addEventListener('click', (e) => {
+            const id = e.currentTarget.dataset.id;
+            if (confirm('¿Eliminar esta notificación del historial?')) {
+                deleteNotification(id);
+            }
+        });
+    });
+}
+
+function deleteNotification(id) {
+    let list = getNotificationsFromStorage();
+    list = list.filter(i => i.id !== id);
+    setNotificationsToStorage(list);
+    renderHistoryCards();
+}
+
+/* Load a saved notification into the form */
+function loadNotificationToForm(id) {
+    const list = getNotificationsFromStorage();
+    const item = list.find(i => i.id === id);
+    if (!item) { alert('Notificación no encontrada'); return; }
+    // fill form fields
+    document.getElementById('tituloNotificacion').value = item.titulo || '';
+    const tipoSel = document.getElementById('tipoNotificacion');
+    tipoSel.value = item.tipo || '';
+    // select plataformas
+    const tipoSistema = document.getElementById('tipoSistema');
+    for (let i=0;i<tipoSistema.options.length;i++) {
+        tipoSistema.options[i].selected = item.plataformas && item.plataformas.includes(tipoSistema.options[i].value);
+    }
+    document.getElementById('descripcionCorta').value = item.descripcion || '';
+    document.getElementById('horaInicio').value = item.horaInicio || '';
+    document.getElementById('horaFin').value = item.horaFin || '';
+    document.getElementById('afectacionTotal').textContent = item.afectacionTotal || getDuracionCalculada();
+    // show preview for loaded item
+    // We reuse the preview generator but do not save again when loading -- to avoid duplicate save, call a specialized preview render:
+    renderPreviewFromObject(item);
+    // scroll to top of form for clarity
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderPreviewFromObject(item) {
+    const previewHtml = `
+        <div class="preview-block">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div>
+                    <div style="font-weight:700;color:#1e3a8a;">${item.tipoTexto || ''}</div>
+                    <h3 style="margin:6px 0 0 0;color:#2b6cb0;">${item.titulo ? item.titulo.replace(/\n/g,'<br>') : '<i>Sin título</i>'}</h3>
+                </div>
+                <div style="text-align:right;">
+                    <div class="meta">Generado: ${formatDateTimeDDMMYYYY(item.createdAt)}</div>
+                    <div class="tag">${item.plataformas.join(', ') || 'Sin plataformas'}</div>
+                </div>
+            </div>
+            <hr style="margin:12px 0;">
+            <div style="display:flex;gap:18px;flex-wrap:wrap;">
+                <div style="flex:1;min-width:220px;">
+                    <strong>¿En qué consiste?</strong>
+                    <p style="margin-top:6px;">${item.descripcion || '<i>Sin descripción</i>'}</p>
+                </div>
+                <div style="min-width:220px;">
+                    <strong>Horario</strong>
+                    <p style="margin:6px 0;"><strong>Inicio:</strong> ${formatDateTimeDDMMYYYY(item.horaInicio)}</p>
+                    <p style="margin:6px 0;"><strong>Fin:</strong> ${formatDateTimeDDMMYYYY(item.horaFin)}</p>
+                    <p style="margin:6px 0;"><strong>Afectación Total:</strong><br>${item.afectacionTotal}</p>
+                </div>
+            </div>
+        </div>
+    `;
+    document.getElementById('resultado').innerHTML = previewHtml;
+}
+
+/* Toggle history visibility */
+document.getElementById('toggleHistoryBtn').addEventListener('click', ()=>{
+    const container = document.getElementById('historyContainer');
+    if (container.classList.contains('hidden')) {
+        container.classList.remove('hidden');
+        document.getElementById('toggleHistoryBtn').textContent = '📚 Ocultar Historial';
+        renderHistoryCards();
+    } else {
+        container.classList.add('hidden');
+        document.getElementById('toggleHistoryBtn').textContent = '📚 Mostrar Historial';
+    }
+});
+
+/* Clear all */
+document.getElementById('btnClearAll').addEventListener('click', ()=>{
+    if (confirm('¿Eliminar todo el historial? Esta acción no se puede deshacer.')) {
+        localStorage.removeItem(STORAGE_KEY);
+        renderHistoryCards();
+    }
+});
+
+/* ---------------------------
+   Export / Import (simplified)
+   --------------------------- */
+document.getElementById('btnExportImagen').addEventListener('click', ()=>{
+    html2canvas(document.getElementById('resultado')).then(canvas=>{
+        const link = document.createElement('a');
+        link.download = 'notificacion.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    });
+});
+
+document.getElementById('btnExportPDF').addEventListener('click', async ()=>{
+    const canvas = await html2canvas(document.getElementById('resultado'), { scale:2 });
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jspdf.jsPDF({ unit:'px', format:[canvas.width, canvas.height] });
+    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+    pdf.save('notificacion.pdf');
+});
+
+document.getElementById('btnGuardarTXT').addEventListener('click', ()=>{
+    // Save the last notification as TXT (JSON)
+    const list = getNotificationsFromStorage();
+    if (list.length === 0) { alert('No hay notificaciones guardadas para exportar'); return; }
+    const last = list[list.length - 1];
+    const blob = new Blob([JSON.stringify(last, null, 2)], { type:'text/plain' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'notificacion.txt'; a.click();
+});
+
+document.getElementById('btnCargarTXT').addEventListener('click', ()=>{
+    document.getElementById('inputCargarTXT').click();
+});
+document.getElementById('inputCargarTXT').addEventListener('change', (ev)=>{
+    const f = ev.target.files[0];
+    if (!f) return;
+    const r = new FileReader();
+    r.onload = ()=> {
+        try {
+            const obj = JSON.parse(r.result);
+            // if the object looks like a notification, save it and refresh history
+            if (obj && obj.titulo) {
+                obj.id = obj.id || ('n_'+Date.now());
+                obj.createdAt = obj.createdAt || new Date().toISOString();
+                const list = getNotificationsFromStorage();
+                list.push(obj);
+                setNotificationsToStorage(list);
+                alert('Notificación importada y guardada.');
+                if (!document.getElementById('historyContainer').classList.contains('hidden')) renderHistoryCards();
+            } else {
+                alert('El archivo no contiene una notificación válida.');
+            }
+        } catch (e) {
+            alert('Error leyendo el archivo: ' + e.message);
+        }
+    };
+    r.readAsText(f);
+});
+
+/* ---------------------------
+   Inicialización: cargar estado
+   --------------------------- */
+document.getElementById('btnGenerar').addEventListener('click', generarYMostrarResultado);
+
+// Update afectacion when dates change
+document.getElementById('horaInicio').addEventListener('change', ()=> { document.getElementById('afectacionTotal').textContent = getDuracionCalculada(); });
+document.getElementById('horaFin').addEventListener('change', ()=> { document.getElementById('afectacionTotal').textContent = getDuracionCalculada(); });
+
+// On load, if history visible by previous session, render
+window.addEventListener('DOMContentLoaded', ()=>{
+    // Ensure export buttons hidden until preview
+    document.getElementById('btnExportImagen').style.display = 'none';
+    document.getElementById('btnExportPDF').style.display = 'none';
+    document.getElementById('btnGuardarTXT').style.display = 'none';
+});
+</script>
+</body>
+</html>
