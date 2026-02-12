@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Generador de Notificaciones</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f7fa;
+  padding: 20px;
+}
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0,0,0,.08);
+}
+
+h1 {
+  text-align: center;
+}
+
+label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-top: 5px;
+}
+
+button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  border: none;
+  background: #0066cc;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #004999;
+}
+
+/* Floating language toggle */
+#langToggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #111827;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 14px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.25);
+  z-index: 9999;
+}
+
+#langToggle span {
+  font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1 data-i18n="title">Generador de Notificaciones</h1>
+
+<label data-i18n="client">Cliente</label>
+<input id="client">
+
+<label data-i18n="incident">Incidente</label>
+<textarea id="incident"></textarea>
+
+<label data-i18n="impact">Impacto</label>
+<textarea id="impact"></textarea>
+
+<label data-i18n="action">Acción</label>
+<textarea id="action"></textarea>
+
+<button onclick="generateNotification()" data-i18n="generate">Generar Notificación</button>
+<button onclick="exportHTML()" data-i18n="exportHtml">Exportar HTML</button>
+<button onclick="exportPDF()" data-i18n="exportPdf">Exportar PDF</button>
+
+<h3 data-i18n="preview">Vista previa</h3>
+<div id="preview" style="border:1px solid #ccc;padding:10px;"></div>
+
+<h3 data-i18n="output">Texto generado</h3>
+<textarea id="output" rows="10"></textarea>
+
+</div>
+
+<!-- Floating Language Button -->
+<div id="langToggle">
+  🌐 <span id="langLabel">ES</span>
+</div>
+
+<script>
+/* ===================== I18N DICTIONARY ===================== */
+const i18n = {
+  es: {
+    title: "Generador de Notificaciones",
+    client: "Cliente",
+    incident: "Incidente",
+    impact: "Impacto",
+    action: "Acción",
+    generate: "Generar Notificación",
+    exportHtml: "Exportar HTML",
+    exportPdf: "Exportar PDF",
+    preview: "Vista previa",
+    output: "Texto generado",
+    templateText: (c,i,im,a) =>
+`Cliente: ${c}
+Incidente: ${i}
+Impacto: ${im}
+Acción: ${a}`,
+    htmlTemplate: (c,i,im,a,date) => `
+<h2>Notificación de Incidente</h2>
+<b>Fecha:</b> ${date}<br>
+<b>Cliente:</b> ${c}<br>
+<b>Incidente:</b> ${i}<br>
+<b>Impacto:</b> ${im}<br>
+<b>Acción:</b> ${a}<br>
+`
+  },
+  en: {
+    title: "Notification Generator",
+    client: "Customer",
+    incident: "Incident",
+    impact: "Impact",
+    action: "Action",
+    generate: "Generate Notification",
+    exportHtml: "Export HTML",
+    exportPdf: "Export PDF",
+    preview: "Preview",
+    output: "Generated text",
+    templateText: (c,i,im,a) =>
+`Customer: ${c}
+Incident: ${i}
+Impact: ${im}
+Action: ${a}`,
+    htmlTemplate: (c,i,im,a,date) => `
+<h2>Incident Notification</h2>
+<b>Date:</b> ${date}<br>
+<b>Customer:</b> ${c}<br>
+<b>Incident:</b> ${i}<br>
+<b>Impact:</b> ${im}<br>
+<b>Action:</b> ${a}<br>
+`
+  }
+};
+
+/* ===================== LANGUAGE ENGINE ===================== */
+let currentLang = localStorage.getItem("lang") ||
+                 (navigator.language.startsWith("es") ? "es" : "en");
+
+function applyLanguage(lang) {
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.getAttribute("data-i18n");
+    if (i18n[lang][key]) el.innerText = i18n[lang][key];
+  });
+  document.getElementById("langLabel").innerText = lang.toUpperCase();
+  localStorage.setItem("lang", lang);
+  currentLang = lang;
+}
+
+applyLanguage(currentLang);
+
+document.getElementById("langToggle").onclick = () => {
+  applyLanguage(currentLang === "es" ? "en" : "es");
+};
+
+/* ===================== GENERATOR ===================== */
+function generateNotification() {
+  const c  = document.getElementById("client").value;
+  const i  = document.getElementById("incident").value;
+  const im = document.getElementById("impact").value;
+  const a  = document.getElementById("action").value;
+
+  const text = i18n[currentLang].templateText(c,i,im,a);
+  document.getElementById("output").value = text;
+
+  const date = new Date().toLocaleString();
+  const html = i18n[currentLang].htmlTemplate(c,i,im,a,date);
+  document.getElementById("preview").innerHTML = html;
+}
+
+/* ===================== EXPORT HTML (STATIC LANGUAGE) ===================== */
+function exportHTML() {
+  const c  = document.getElementById("client").value;
+  const i  = document.getElementById("incident").value;
+  const im = document.getElementById("impact").value;
+  const a  = document.getElementById("action").value;
+  const date = new Date().toLocaleString();
+
+  const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Notification</title></head>
+<body>
+${i18n[currentLang].htmlTemplate(c,i,im,a,date)}
+</body>
+</html>
+`;
+
+  const blob = new Blob([htmlContent], {type: "text/html"});
+  const aTag = document.createElement("a");
+  aTag.href = URL.createObjectURL(blob);
+  aTag.download = "notification.html";
+  aTag.click();
+}
+
+/* ===================== EXPORT PDF ===================== */
+function exportPDF() {
+  const win = window.open("", "_blank");
+  win.document.write(document.getElementById("preview").innerHTML);
+  win.document.close();
+  win.print();
+}
+</script>
+
+</body>
+</html>
