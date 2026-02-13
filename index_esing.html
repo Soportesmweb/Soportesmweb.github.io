@@ -2,196 +2,150 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Speedy Notification Generator</title>
+<title>Generador de Notificaciones</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- Tailwind -->
+<!-- Tailwind (si ya lo tienes puedes quitarlo) -->
 <script src="https://cdn.tailwindcss.com"></script>
-
-<!-- html2canvas & jsPDF -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<style>
-/* === TU CSS ORIGINAL COMPLETO === */
-/* (No modificado) */
-
-/* === BOTÓN IDIOMA ENTERPRISE === */
-#langToggleEnterprise {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: #111827;
-  color: white;
-  padding: 12px 16px;
-  border-radius: 999px;
-  font-size: 14px;
-  cursor: pointer;
-  z-index: 99999;
-  box-shadow: 0 8px 24px rgba(0,0,0,.25);
-}
-</style>
 </head>
 
-<body class="bg-gray-100 p-4">
+<body class="bg-gray-100">
 
-<!-- ================= LOGIN OVERLAY ORIGINAL ================= -->
-<div id="loginOverlay" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-  <div class="bg-white p-6 rounded shadow-md">
-    <h2 class="text-xl font-bold mb-4">Login</h2>
-    <input id="passwordInput" type="password" class="border p-2 w-full mb-4" placeholder="Password">
-    <button onclick="checkPassword()" class="bg-blue-500 text-white px-4 py-2 rounded">Enter</button>
-  </div>
+<!-- Selector de idioma -->
+<div class="fixed top-3 right-5 z-50">
+  <select id="langSelector" class="border px-2 py-1 rounded bg-white shadow text-sm">
+    <option value="es">Español</option>
+    <option value="en">English</option>
+  </select>
 </div>
 
-<!-- ================= MAIN UI ORIGINAL ================= -->
-<div id="mainContent" class="hidden">
+<div class="container mx-auto p-6 bg-white shadow rounded mt-6">
 
-<div class="container mx-auto bg-white p-6 rounded shadow">
+<h1 class="text-3xl font-bold mb-6 text-center">
+  Generador de Notificaciones Interactivo
+</h1>
 
-<h1 class="text-2xl font-bold mb-4">Speedy Notification Generator</h1>
+<label>Título de la Notificación:</label>
+<textarea id="tituloNotificacion" class="border w-full p-2 mb-4"></textarea>
 
-<!-- === TU FORM ORIGINAL COMPLETO AQUÍ SIN MODIFICAR === -->
-<!-- NO LO ALTERO PARA NO ROMPER TXT LOAD -->
+<label>Tipo de Notificación:</label>
+<select id="tipoNotificacion" class="border w-full p-2 mb-4">
+  <option>Inicio de Afectación</option>
+  <option>Actualización de Afectación</option>
+  <option>Término de Afectación</option>
+</select>
 
-<div id="resultado" class="mt-4 border p-4 rounded bg-gray-50">
-La previsualizacion se mostrará aquí
+<label>Plataforma:</label>
+<input id="plataforma" class="border w-full p-2 mb-4">
+
+<label>¿En qué consiste?</label>
+<textarea id="descripcion" class="border w-full p-2 mb-4"></textarea>
+
+<label>Causa Raíz:</label>
+<textarea id="causaRaiz" class="border w-full p-2 mb-4"></textarea>
+
+<label>Servicios Afectados:</label>
+<textarea id="serviciosAfectados" class="border w-full p-2 mb-4"></textarea>
+
+<label>Países Afectados:</label>
+<div id="paises" class="border p-2 mb-4">México, Argentina, Colombia...</div>
+
+<div class="flex gap-2 flex-wrap mt-4">
+  <button onclick="generarYMostrarResultado()" class="bg-blue-600 text-white px-4 py-2 rounded">
+    Generar Notificación y Previsualizar
+  </button>
+
+  <button onclick="generarCorreo()" class="bg-green-600 text-white px-4 py-2 rounded">
+    Genera Correo para Vo.Bo.
+  </button>
+
+  <button onclick="exportarImagen()" class="bg-purple-600 text-white px-4 py-2 rounded">
+    Exportar como Imagen
+  </button>
+
+  <button onclick="exportarPDF()" class="bg-red-600 text-white px-4 py-2 rounded">
+    Exportar como PDF
+  </button>
+
+  <button onclick="guardarTXT()" class="bg-gray-600 text-white px-4 py-2 rounded">
+    Guardar como TXT
+  </button>
+
+  <button onclick="cargarTXT()" class="bg-gray-800 text-white px-4 py-2 rounded">
+    Cargar desde TXT
+  </button>
 </div>
 
-<div class="mt-4 flex gap-2">
-<button id="btnExportImagen" onclick="generarImagen()" class="bg-green-500 text-white px-4 py-2 rounded hidden">Export PNG</button>
-<button id="btnExportPDF" onclick="generarPDF()" class="bg-red-500 text-white px-4 py-2 rounded hidden">Export PDF</button>
-<button id="btnGuardarTXT" onclick="guardarComoTXT()" class="bg-yellow-500 text-white px-4 py-2 rounded hidden">Save TXT</button>
-<button onclick="cargarDesdeTXT()" class="bg-purple-500 text-white px-4 py-2 rounded">Load TXT</button>
-<button id="enviarCorreoBtn" onclick="generarHtmlParaCorreo()" class="bg-blue-500 text-white px-4 py-2 rounded hidden">Send Email</button>
-</div>
+<hr class="my-6">
 
-<input type="file" id="inputCargarTXT" class="hidden">
+<h2 class="text-xl font-bold">Previsualización de Notificación</h2>
+<div id="preview" class="border p-4 mt-3 bg-gray-50"></div>
 
 </div>
-</div>
+
+<!-- ================================================= -->
+<!-- TU JS ORIGINAL DEBE PERMANECER AQUÍ SIN MODIFICAR -->
+<!-- ================================================= -->
+
+<!-- ================== I18N MODULE ================== -->
 <script>
-/* ======================================================
-   🌐 ENTERPRISE I18N ENGINE (NO INTRUSIVE PATCH)
-====================================================== */
-
-const I18N = {
+const translations = {
   es: {
-    labels: {
-      platforms: "Plataforma(s):",
-      description: "¿En qué consiste?:",
-      schedule: "Horario:",
-      start: "Inicio:",
-      end: "Fin:",
-      totalImpact: "Afectación Total:",
-      affectedServices: "Servicio(s) Afectado(s):",
-      finalImpact: "Afectación al usuario final:",
-      responsible: "Responsable(s) y Causa Raíz:",
-      teams: "Equipo(s) Responsable(s):",
-      rootCause: "Causa Raíz:",
-      countries: "País(es) Afectado(s):",
-      undefined: "Por Definir"
-    },
-    legal: `
-<p>Si tienen alguna duda, favor de contactar a <a href="mailto:soporte@speedymovil.com">soporte@speedymovil.com</a></p>
-<p>Saludos cordiales.</p>
-<p>Gerencia de Soporte</p>
-<p>Este mensaje es confidencial...</p>`
+    "Generador de Notificaciones Interactivo": "Generador de Notificaciones Interactivo",
+    "Título de la Notificación:": "Título de la Notificación:",
+    "Tipo de Notificación:": "Tipo de Notificación:",
+    "Plataforma:": "Plataforma:",
+    "¿En qué consiste?": "¿En qué consiste?",
+    "Causa Raíz:": "Causa Raíz:",
+    "Servicios Afectados:": "Servicios Afectados:",
+    "Países Afectados:": "Países Afectados:",
+    "Generar Notificación y Previsualizar": "Generar Notificación y Previsualizar",
+    "Genera Correo para Vo.Bo.": "Genera Correo para Vo.Bo.",
+    "Exportar como Imagen": "Exportar como Imagen",
+    "Exportar como PDF": "Exportar como PDF",
+    "Guardar como TXT": "Guardar como TXT",
+    "Cargar desde TXT": "Cargar desde TXT",
+    "Previsualización de Notificación": "Previsualización de Notificación"
   },
+
   en: {
-    labels: {
-      platforms: "Platform(s):",
-      description: "What is this about?:",
-      schedule: "Schedule:",
-      start: "Start:",
-      end: "End:",
-      totalImpact: "Total Impact:",
-      affectedServices: "Affected Service(s):",
-      finalImpact: "End-user impact:",
-      responsible: "Responsible Team(s) & Root Cause:",
-      teams: "Responsible Team(s):",
-      rootCause: "Root Cause:",
-      countries: "Affected Country(ies):",
-      undefined: "TBD"
-    },
-    legal: `
-<p>If you have any questions, please contact <a href="mailto:soporte@speedymovil.com">soporte@speedymovil.com</a></p>
-<p>Kind regards.</p>
-<p>Support Management</p>
-<p>This message is confidential...</p>`
+    "Generador de Notificaciones Interactivo": "Interactive Notification Generator",
+    "Título de la Notificación:": "Notification Title:",
+    "Tipo de Notificación:": "Notification Type:",
+    "Plataforma:": "Platform:",
+    "¿En qué consiste?": "Description:",
+    "Causa Raíz:": "Root Cause:",
+    "Servicios Afectados:": "Affected Services:",
+    "Países Afectados:": "Affected Countries:",
+    "Generar Notificación y Previsualizar": "Generate Notification and Preview",
+    "Genera Correo para Vo.Bo.": "Generate Email for Approval",
+    "Exportar como Imagen": "Export as Image",
+    "Exportar como PDF": "Export as PDF",
+    "Guardar como TXT": "Save as TXT",
+    "Cargar desde TXT": "Load from TXT",
+    "Previsualización de Notificación": "Notification Preview"
   }
 };
 
-let CURRENT_LANG = localStorage.getItem("lang") || "es";
-function t(k){ return I18N[CURRENT_LANG].labels[k] || k; }
+function translatePage(lang) {
+  localStorage.setItem("lang", lang);
+  document.body.querySelectorAll("*").forEach(el => {
+    if (el.childNodes.length === 1 && el.childNodes[0].nodeType === 3) {
+      const text = el.innerText.trim();
+      if (translations[lang][text]) {
+        el.innerText = translations[lang][text];
+      }
+    }
+  });
+}
 
-/* Floating language button */
-document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.createElement("div");
-  btn.id = "langToggleEnterprise";
-  btn.innerHTML = "🌐 <b id='langLabelEnterprise'>" + CURRENT_LANG.toUpperCase() + "</b>";
-  document.body.appendChild(btn);
-
-  btn.onclick = () => {
-    CURRENT_LANG = CURRENT_LANG === "es" ? "en" : "es";
-    localStorage.setItem("lang", CURRENT_LANG);
-    document.getElementById("langLabelEnterprise").innerText = CURRENT_LANG.toUpperCase();
-    generarYMostrarResultado(); // refresh preview
-  };
+document.getElementById("langSelector").addEventListener("change", e => {
+  translatePage(e.target.value);
 });
 
-/* ======================================================
-   PATCH DE TU FUNCIÓN PRINCIPAL (NO BORRA NADA)
-====================================================== */
-
-const _original_generarYMostrarResultado = generarYMostrarResultado;
-
-generarYMostrarResultado = function() {
-  _original_generarYMostrarResultado(); // ejecuta tu lógica original
-
-  // RECONSTRUYE PREVIEW TRADUCIDO
-  const resultadoDiv = document.getElementById('resultado');
-  if (!resultadoDiv) return;
-
-  let html = resultadoDiv.innerHTML;
-  html = html
-    .replace(/Plataforma\(s\):/g, t("platforms"))
-    .replace(/¿En qué consiste\?:/g, t("description"))
-    .replace(/Horario:/g, t("schedule"))
-    .replace(/Inicio:/g, t("start"))
-    .replace(/Fin:/g, t("end"))
-    .replace(/Afectación Total:/g, t("totalImpact"))
-    .replace(/Servicio\(s\) Afectado\(s\):/g, t("affectedServices"))
-    .replace(/Afectación al usuario final:/g, t("finalImpact"))
-    .replace(/Responsable\(s\) y Causa Raíz:/g, t("responsible"))
-    .replace(/Equipo\(s\) Responsable\(s\):/g, t("teams"))
-    .replace(/Causa Raíz:/g, t("rootCause"))
-    .replace(/País\(es\) Afectado\(s\):/g, t("countries"))
-    .replace(/Por Definir/g, t("undefined"));
-
-  // Legal footer replace
-  html = html.replace(/Si tienen alguna duda[\s\S]*$/g, I18N[CURRENT_LANG].legal);
-
-  resultadoDiv.innerHTML = html;
-};
-
-/* ======================================================
-   EXPORT HTML ESTÁTICO MULTIIDIOMA
-====================================================== */
-
-window.exportStaticHTML = function() {
-  const html = document.getElementById("resultado").innerHTML;
-  const full = `
-<!DOCTYPE html>
-<html>
-<head><meta charset="UTF-8"><title>Notification</title></head>
-<body>${html}</body>
-</html>`;
-  const blob = new Blob([full], {type:"text/html"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "notification_" + CURRENT_LANG + ".html";
-  a.click();
-};
+const savedLang = localStorage.getItem("lang") || "es";
+document.getElementById("langSelector").value = savedLang;
+translatePage(savedLang);
 </script>
 
 </body>
