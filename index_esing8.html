@@ -1204,7 +1204,9 @@ const translations = {
 let currentLang = localStorage.getItem("lang") || "es";
 function t(k){ return translations[currentLang][k] || k; }
 
-function setLanguage(lang){
+
+    function generarYMostrarResultado() {
+	function setLanguage(lang){
   currentLang = lang;
   localStorage.setItem("lang", lang);
 const translations = {
@@ -1225,7 +1227,6 @@ function setLanguage(lang){
 }
   generarYMostrarResultado(); // refresca preview en nuevo idioma
 }
-    function generarYMostrarResultado() {
         const tituloNotificacion = document.getElementById('tituloNotificacion').value.trim();
         const tituloNotificacionConSaltosDeLinea = tituloNotificacion.replace(/\n/g, '<br>');	
         const tipoNotificacionSelect = document.getElementById('tipoNotificacion');
