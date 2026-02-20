@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bienvenido</title>
+
+<style>
+body {
+    background: linear-gradient(135deg, #0f172a, #1e3a8a);
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    text-align: center;
+    background: rgba(0,0,0,0.35);
+    padding: 40px 80px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+    font-weight: bold;
+}
+
+.lang-container {
+    display: flex;
+    justify-content: center;
+    gap: 80px;
+}
+
+.lang-option {
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.lang-option:hover {
+    transform: scale(1.1);
+}
+
+.lang-option img {
+    width: 120px;
+    height: auto;
+    border-radius: 6px;
+    border: 2px solid white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+
+.lang-text {
+    font-size: 1.6rem;
+    font-weight: bold;
+    margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>Bienvenido</h1>
+    <h2>Escoge Idioma</h2>
+
+    <div class="lang-container">
+
+        <!-- ESPAÑOL -->
+        <a href="index_esp.html" class="lang-option">
+            <div class="lang-text">Español</div>
+            <img src="https://flagcdn.com/w320/mx.png" alt="México">
+        </a>
+
+        <!-- INGLES -->
+        <a href="index_eng.html" class="lang-option">
+            <div class="lang-text">English</div>
+            <img src="https://flagcdn.com/w320/gb.png" alt="United Kingdom">
+        </a>
+
+    </div>
+</div>
+
+</body>
+</html>
