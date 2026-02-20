@@ -563,7 +563,7 @@
 <body>
 <div class="container">
     <img alt="Logo de la empresa" class="logo-img rounded-full" crossorigin="anonymous" onerror="this.onerror=null;this.src='onerror.png';" src="speedylogo.png"/>
-    <h1 class="text-3xl font-bold text-gray-800 mb-8 text-center">Generador de Notificaciones Interactivo</h1>
+    <h1 class="text-3xl font-bold text-gray-800 mb-8 text-center">Interactive Notification Generator</h1>
     <form class="space-y-6" id="generadorForm">
         <div class="section-container">
             <label for="tituloNotificacion">Notification Title:</label>
@@ -660,7 +660,7 @@
                     <input type="checkbox" id="sinAfectacionCheck" class="h-4 w-4 text-indigo-600 rounded mr-2" onclick="toggleAfectacionTotal()">
                     <label for="sinAfectacionCheck" class="text-sm text-gray-700">"No Impact"</label>
                 </div>
-                <label>Afectación Total:<br></label>
+                <label>Total Impact:<br></label>
                 <p class="text-lg font-semibold text-gray-700" id="afectacionTotal">No Impact</p>
             </div>
         </div>
@@ -895,7 +895,7 @@
 
 
     /**
-     * Función para calcular la duración de la afectación en DÍAS, Horas y Minutos (o "En Curso" / "Sin Afectación" - base).
+     * Función para calcular la duración de la afectación en DÍAS, Horas y Minutos (o "Ongoing" / "No Impact" - base).
      * **MODIFICADA: Ahora calcula días si la duración excede 24 horas.**
      * @returns {string} Duración calculada.
      */
@@ -908,11 +908,11 @@
         }
 
         if (horaInicioInput && !horaFinInput) {
-            return 'En Curso'; // Lógica de "En Curso"
+            return 'Ongoing'; // Lógica de "Ongoing"
         }
 
         if (!horaInicioInput || !horaFinInput) {
-            return 'Sin Afectación'; // Faltan datos para calcular
+            return 'No impact'; // Faltan datos para calcular
         }
 
         const fechaInicio = new Date(horaInicioInput);
@@ -928,7 +928,7 @@
         const diferenciaMilisegundos = fechaFin.getTime() - fechaInicio.getTime();
         
         if (diferenciaMilisegundos === 0) {
-            return 'Sin Afectación';
+            return 'No impact';
         }
         
         // CÁLCULO DE DÍAS, HORAS Y MINUTOS
@@ -943,24 +943,24 @@
         let resultadoString = '';
 
         if (dias > 0) {
-            resultadoString += `${dias} ${dias === 1 ? 'día' : 'días'}`;
+            resultadoString += `${dias} ${dias === 1 ? 'day' : 'days'}`;
         }
         if (horas > 0) {
             if (resultadoString.length > 0) {
                 resultadoString += ' - ';
             }
-            resultadoString += `${horas} ${horas === 1 ? 'hora' : 'horas'}`;
+            resultadoString += `${horas} ${horas === 1 ? 'hour' : 'hours'}`;
         }
         if (minutos > 0) {
             if (resultadoString.length > 0) {
                 resultadoString += ' - ';
             }
-            resultadoString += `${minutos} ${minutos === 1 ? 'minuto' : 'minutos'}`;
+            resultadoString += `${minutos} ${minutos === 1 ? 'minute' : 'minutes'}`;
         }
 
         // Caso borde: Si la duración es menor a un minuto pero mayor a 0ms (debería ser handled por diferenciaMilisegundos === 0, pero como fallback)
         if (resultadoString.length === 0) {
-            return 'Menos de un minuto';
+            return 'Less than a minute';
         }
         
         return resultadoString;
@@ -969,7 +969,7 @@
 
     /**
      * Función para calcular y mostrar la afectación total en DÍAS, Horas y Minutos,
-     * incluyendo el estado de "Sin Afectación" si el checkbox está activo.
+     * incluyendo el estado de "No impact" si el checkbox está activo.
      */
     function calcularAfectacionTotal() {
         const sinAfectacionCheck = document.getElementById('sinAfectacionCheck');
@@ -979,12 +979,12 @@
         
         if (sinAfectacionCheck.checked) {
             // Caso especial: Checkbox activo.
-            if (duracionCalculada === 'Sin Afectación' || duracionCalculada.includes('Fechas inválidas') || duracionCalculada.includes('anterior')) {
-                // Si la duración base es ya 'Sin Afectación' o un error, solo mostramos 'Sin Afectación'.
-                afectacionTotalElement.textContent = 'Sin Afectación';
+            if (duracionCalculada === 'No impact' || duracionCalculada.includes('Fechas inválidas') || duracionCalculada.includes('anterior')) {
+                // Si la duración base es ya 'No Impact' o un error, solo mostramos 'No Impact'.
+                afectacionTotalElement.textContent = 'No impact';
             } else {
-                // Si hay duración (o está "En Curso"), la mostramos y le concatenamos " (Sin Afectación)".
-                afectacionTotalElement.textContent = `${duracionCalculada} (Sin Afectación)`;
+                // Si hay duración (o está "Ongoing"), la mostramos y le concatenamos " (No Impact)".
+                afectacionTotalElement.textContent = `${duracionCalculada} (No Impact)`;
             }
         } else {
             // Checkbox inactivo: mostramos el resultado calculado
@@ -1195,7 +1195,7 @@
             "Splunk": "splunk.png", "Kibana": "kibana.png", "Dynatrace": "dynatrace.png", 
             "AppDynamics": "appdynamics.png", "Mi Claro Chile": "miclarochile.png", 
             "Mi Claro CENAM": "miclarocenam.png", "Mi Claro Perú": "miclaroperu.png",
-            "Chatbot": "chatbot.png", "TelcelBot": "telcelbot.png", "IT": "it.png", "Plataformas Internas": "plataformas.png" // ADDED
+            "Chatbot": "chatbot.png", "TelcelBot": "telcelbot.png", "IT": "it.png", "Internal Platform": "plataformas.png" // ADDED
         };
 
         const tipoNotificacionImageMap = {
@@ -1243,11 +1243,11 @@
                     <h4>${tituloNotificacionConSaltosDeLinea}</h4>
                 </div>
                 <div class="preview-grid-cell spanning-row">
-                    <strong class="preview-section-title">Plataform:</strong>
+                    <strong class="preview-section-title">Platform:</strong>
                     ${plataformaImagesHtml}
                 </div>
                 <div class="preview-grid-cell spanning-row content-only">
-                    <p class="description-text"><strong>What is the issue?</strong><br>
+                    <p class="description-text"><strong>What is the issue?:</strong><br>
 		     <br> 
 		     ${descripcionCorta || ''}</p>
                 </div>
@@ -1283,10 +1283,10 @@
             <div class="mt-8 pt-4 border-t border-gray-200 text-xs text-gray-500 leading-relaxed" >
                 <p>If you have any questions, please contact <a href="mailto:soporte@speedymovil.com" class="text-blue-600 hover:underline">soporte@speedymovil.com</a></p>
                 <p>&nbsp;</p>
-                <p>Saludos cordiales.</p>
+                <p>Kind regards.</p>
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
-                <p>Gerencia de Soporte</p>
+                <p>Support Department</p>
                 <p>&nbsp;</p>
                 <p>This message is intended solely for the use of the person or entity to whom it is addressed. It contains strictly confidential and legally protected information, the disclosure of which is punishable by law. If you are not the intended recipient of this message, nor the employee or agent responsible for this information, you are hereby notified that its reproduction and distribution are strictly prohibited. If you received this message in error, please notify the sender immediately and destroy the message. All opinions expressed in this email are those of the author and do not necessarily reflect the views of América Móvil, S.A. de C.V. or any of its controlled, controlling, affiliated, or subsidiary companies.
 </p>
@@ -1347,7 +1347,7 @@
             segundaParteAsunto = tipoNotifTexto.replace(/\[|\]/g, '').trim();
         }
 
-        const serviciosAfectadosString = servicios.length > 0 ? servicios.join(', ') : 'Por Definir';
+        const serviciosAfectadosString = servicios.length > 0 ? servicios.join(', ') : 'to be defined';
         
         const subject = `[Notificación de ${primeraParteAsunto}] - [${segundaParteAsunto}] - [${plataformas.join(', ')}] [${titulo}] ${serviciosAfectadosString}`;
 
@@ -1393,7 +1393,7 @@
             "Splunk": "splunk.png", "Kibana": "kibana.png", "Dynatrace": "dynatrace.png", 
             "AppDynamics": "appdynamics.png", "Mi Claro Chile": "miclarochile.png", 
             "Mi Claro CENAM": "miclarocenam.png", "Mi Claro Perú": "miclaroperu.png",
-            "Chatbot": "chatbot.png", "TelcelBot": "telcelbot.png", "IT": "it.png", "Plataformas Internas": "plataformas.png" // ADDED
+            "Chatbot": "chatbot.png", "TelcelBot": "telcelbot.png", "IT": "it.png", "Internal Platform": "plataformas.png" // ADDED
         };
         selectedValues.forEach(platform => {
             if (imageMap[platform]) {
@@ -1456,10 +1456,10 @@
     }
 
     function construirNombreArchivo() {
-        const titulo = document.getElementById('tituloNotificacion').value.trim() || 'Notificacion';
+        const titulo = document.getElementById('tituloNotificacion').value.trim() || 'Notification';
         const tipoNotifSelect = document.getElementById('tipoNotificacion');
-        const tipoNotifTexto = tipoNotifSelect.options[tipoNotifSelect.selectedIndex].text.replace(/\[|\]|\s/g, '') || 'Tipo';
-        const plataformas = getSelectedOptions(document.getElementById('tipoSistema')).join(',') || 'Plataforma';
+        const tipoNotifTexto = tipoNotifSelect.options[tipoNotifSelect.selectedIndex].text.replace(/\[|\]|\s/g, '') || 'Type';
+        const plataformas = getSelectedOptions(document.getElementById('tipoSistema')).join(',') || 'Platform';
         const now = new Date();
         const timestamp = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}_${now.getHours().toString().padStart(2, '0')}h${now.getMinutes().toString().padStart(2, '0')}m`;
         let baseName = `${titulo}-${tipoNotifTexto}-${plataformas}_${timestamp}`;
@@ -1468,7 +1468,7 @@
 
     function generarImagen() {
         const resultado = document.getElementById('resultado');
-        if (!resultado || resultado.innerText.includes("La previsualizacion se mostrará aquí")) {
+        if (!resultado || resultado.innerText.includes("Preview will appear here")) {
             alert("Primero debes generar una notificación.");
             return;
         }
@@ -1496,7 +1496,7 @@
 
     function generarPDF() {
         const resultado = document.getElementById('resultado');
-        if (!resultado || resultado.innerText.includes("La previsualizacion se mostrará aquí")) {
+        if (!resultado || resultado.innerText.includes("Preview will appear here")) {
             alert("Primero debes generar una notificación.");
             return;
         }
@@ -1591,9 +1591,9 @@ Tipo de Notificación: ${tipoNotificacionTexto || 'No especificado'}
 DETALLES
 ----------------------------------------
 
-Plataforma(s): ${plataformasSeleccionadas.join(', ') || 'No especificadas'}
-¿En qué consiste?: ${descripcionCorta || 'No especificado'}
-Consideraciones sobre el servicio: ${consideracionesServicio || 'Ninguna'}
+Plataforma(s): ${plataformasSeleccionadas.join(', ') || 'Not specified'}
+¿En qué consiste?: ${descripcionCorta || 'Not specified'}
+Consideraciones sobre el servicio: ${consideracionesServicio || 'None'}
 
 ----------------------------------------
 CRONOLOGÍA Y AFECTACIÓN
@@ -1601,7 +1601,7 @@ CRONOLOGÍA Y AFECTACIÓN
 
 Hora de Inicio (Visual): ${horaInicioLocal}
 Hora de Fin (Visual): ${horaFinLocal}
-Afectación Total: ${afectacionTotal || 'No especificada'}
+Afectación Total: ${afectacionTotal || 'Not specified'}
 Hora de Inicio (ISO): ${horaInicioISO || '--'}
 Hora de Fin (ISO): ${horaFinISO || '--'}
 
@@ -1609,16 +1609,16 @@ Hora de Fin (ISO): ${horaFinISO || '--'}
 ANÁLISIS Y RESPONSABLES
 ----------------------------------------
 
-Equipo(s) Responsable(s): ${equiposResponsablesSeleccionados.join(', ') || 'Por Definir'}
-Causa Raíz: ${causaRaiz || 'Por Definir'}
+Equipo(s) Responsable(s): ${equiposResponsablesSeleccionados.join(', ') || 'to be defined'}
+Causa Raíz: ${causaRaiz || 'to be defined'}
 
 ----------------------------------------
 IMPACTO
 ----------------------------------------
 
-Servicio(s) Afectado(s): ${serviciosConPorcentaje.join(', ') || 'Por Definir'}
-Afectación al usuario final: ${afectacionUsuarioFinal || 'Por Definir'}
-País(es) Afectado(s): ${paisesAfectadosNombres.join(', ') || 'Por Definir'}
+Servicio(s) Afectado(s): ${serviciosConPorcentaje.join(', ') || 'to be defined'}
+Afectación al usuario final: ${afectacionUsuarioFinal || 'to be defined'}
+País(es) Afectado(s): ${paisesAfectadosNombres.join(', ') || 'to be defined'}
 
 ========================================
 Generado el ${new Date().toLocaleString()}
@@ -1674,7 +1674,7 @@ window.cargarDesdeTXT = function() {
 
             // Función para seleccionar múltiples opciones.
             function selectOptions(selectElement, valuesString) {
-                if (!valuesString || valuesString.includes("No especificado") || valuesString.includes("Por Definir")) {
+                if (!valuesString || valuesString.includes("Not specified") || valuesString.includes("to be defined")) {
                     Array.from(selectElement.options).forEach(opt => opt.selected = false);
                     return;
                 }
@@ -1742,7 +1742,7 @@ window.cargarDesdeTXT = function() {
                 const servicesWithPercentages = v.split(',').map(item => {
                     const match = item.trim().match(/^(.*?)(?:\s\((\d+)%\))?$/);
                     return match ? { name: match[1].trim(), percentage: match[2] || null } : null;
-                }).filter(s => s && s.name && s.name !== "Por Definir");
+                }).filter(s => s && s.name && s.name !== "to be defined");
 
                 const serviceNames = servicesWithPercentages.map(s => s.name);
                 const selSrv = document.getElementById('servicioAfectadoSelect');
@@ -1774,11 +1774,11 @@ window.cargarDesdeTXT = function() {
 
             // --- Recalcular y refrescar UI ---
             try {
-                // Sincroniza el checkbox "Sin Afectación"
+                // Sincroniza el checkbox "No Impact"
                 const afectacionText = getValue("Afectación Total");
                 const sinAfectacionCheck = document.getElementById('sinAfectacionCheck');
-                // Lógica de carga AJUSTADA: Si el texto CONTIENE "Sin Afectación", activa el checkbox.
-                if (afectacionText.includes("Sin Afectación")) {
+                // Lógica de carga AJUSTADA: Si el texto CONTIENE "No Impact", select checkbox.
+                if (afectacionText.includes("No Impact")) {
                     sinAfectacionCheck.checked = true;
                 } else {
                     sinAfectacionCheck.checked = false;
