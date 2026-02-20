@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Generador de Notificaciones</title>
+    <title>Notification Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <style>
@@ -561,8 +561,6 @@
 </style>
 </head>
 <body>
-<script>const USERNAME = "admin"; const PASSWORD = "12345"; document.write(` <div id="loginOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#f0f2f5;display:flex;justify-content:center;align-items:center;z-index:9999;"> <div style="background:#fff;padding:30px;border-radius:12px;box-shadow:0 5px 20px rgba(0,0,0,0.2);text-align:center;max-width:300px;"> <h2 style="margin-bottom:20px;color:#333;">Acceso Restringido</h2> <input type="text" id="loginUser" placeholder="Usuario" style="width:100%;margin-bottom:10px;padding:10px;border:1px solid #ccc;border-radius:6px;"><br> <input type="password" id="loginPass" placeholder="Contraseña" style="width:100%;margin-bottom:15px;padding:10px;border:1px solid #ccc;border-radius:6px;"><br> <button onclick="checkLogin()" style="width:100%;padding:12px;background:#3a73bd;color:#fff;border:none;border-radius:6px;cursor:pointer;">Entrar</button> <p id="loginError" style="color:red;margin-top:15px;display:none;">Usuario o contraseña incorrectos</p> </div> </div> `); function checkLogin(){ const u=document.getElementById("loginUser").value; const p=document.getElementById("loginPass").value; if(u===USERNAME && p===PASSWORD){ document.getElementById("loginOverlay").style.display="none"; }else{ document.getElementById("loginError").style.display="block"; } }</script>
-
 <div class="container">
     <img alt="Logo de la empresa" class="logo-img rounded-full" crossorigin="anonymous" onerror="this.onerror=null;this.src='onerror.png';" src="speedylogo.png"/>
     <h1 class="text-3xl font-bold text-gray-800 mb-8 text-center">Generador de Notificaciones Interactivo</h1>
