@@ -17,58 +17,69 @@ body {
     margin: 0;
 }
 
+/* Contenedor principal */
 .container {
     text-align: center;
     background: rgba(0,0,0,0.35);
-    padding: 40px 80px;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    padding: 60px 120px;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.6);
 }
 
+/* Textos grandes */
 h1 {
-    font-size: 3rem;
+    font-size: 4rem;
     margin-bottom: 20px;
 }
 
 h2 {
-    font-size: 2.5rem;
-    margin-bottom: 40px;
+    font-size: 3.2rem;
+    margin-bottom: 50px;
     font-weight: bold;
 }
 
+/* Idiomas */
 .lang-container {
     display: flex;
     justify-content: center;
-    gap: 80px;
+    gap: 120px;
 }
 
+/* Quitar estilo de link */
 .lang-option {
     text-align: center;
     cursor: pointer;
-    transition: transform 0.2s ease;
+    text-decoration: none !important;
+    color: white !important;
+    transition: transform 0.2s ease, filter 0.2s ease;
 }
 
 .lang-option:hover {
-    transform: scale(1.1);
+    transform: scale(1.15);
+    filter: brightness(1.2);
 }
 
+/* Bandera grande */
 .lang-option img {
-    width: 120px;
+    width: 180px;
     height: auto;
-    border-radius: 6px;
-    border: 2px solid white;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    border-radius: 10px;
+    border: 3px solid white;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.6);
 }
 
+/* Texto idioma */
 .lang-text {
-    font-size: 1.6rem;
+    font-size: 2.2rem;
     font-weight: bold;
-    margin-top: 10px;
+    margin-bottom: 12px;
 }
 </style>
 </head>
 
 <body>
+
+<script>const USERNAME = "admin"; const PASSWORD = "12345"; document.write(` <div id="loginOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#f0f2f5;display:flex;justify-content:center;align-items:center;z-index:9999;"> <div style="background:#fff;padding:30px;border-radius:12px;box-shadow:0 5px 20px rgba(0,0,0,0.2);text-align:center;max-width:300px;"> <h2 style="margin-bottom:20px;color:#333;">Acceso Restringido</h2> <input type="text" id="loginUser" placeholder="Usuario" style="width:100%;margin-bottom:10px;padding:10px;border:1px solid #ccc;border-radius:6px;"><br> <input type="password" id="loginPass" placeholder="Contraseña" style="width:100%;margin-bottom:15px;padding:10px;border:1px solid #ccc;border-radius:6px;"><br> <button onclick="checkLogin()" style="width:100%;padding:12px;background:#3a73bd;color:#fff;border:none;border-radius:6px;cursor:pointer;">Entrar</button> <p id="loginError" style="color:red;margin-top:15px;display:none;">Usuario o contraseña incorrectos</p> </div> </div> `); function checkLogin(){ const u=document.getElementById("loginUser").value; const p=document.getElementById("loginPass").value; if(u===USERNAME && p===PASSWORD){ document.getElementById("loginOverlay").style.display="none"; }else{ document.getElementById("loginError").style.display="block"; } }</script>
 
 <div class="container">
     <h1>Bienvenido</h1>
@@ -79,13 +90,13 @@ h2 {
         <!-- ESPAÑOL -->
         <a href="index_esp.html" class="lang-option">
             <div class="lang-text">Español</div>
-            <img src="https://flagcdn.com/w320/mx.png" alt="México">
+            <img src="https://flagcdn.com/w640/mx.png" alt="México">
         </a>
 
-        <!-- INGLES -->
+        <!-- INGLÉS -->
         <a href="index_eng.html" class="lang-option">
             <div class="lang-text">English</div>
-            <img src="https://flagcdn.com/w320/gb.png" alt="United Kingdom">
+            <img src="https://flagcdn.com/w640/gb.png" alt="United Kingdom">
         </a>
 
     </div>
