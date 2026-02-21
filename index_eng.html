@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -573,25 +574,25 @@
             <label for="tipoNotificacion">Notification Type:</label>
             <select class="focus:ring-indigo-500 focus:border-red-500" id="tipoNotificacion" required="">
                 <option value="">Select a type</option>
-                <option value="Afectacion">[ Outage Start ]</option>
-		<option value="ActualizacionAfectacion">[ Outage Update ]</option>
-		<option value="Restablecimiento">[ Outage End ]</option>
-                <option value="Intermitencia">[ Intermittency Start ]</option>
-		<option value="ActualizacionIntermitencia">[ Intermittency Update ]</option>
-		<option value="Restablecimiento">[ Intermittency End ]</option>
-		<option value="Ventana de Mantenimiento">[ Scheduled Maintenance Window ]</option>
-		<option value="InicioVM">[ Maintenance Window Start ]</option>
-                <option value="Termino">[ Maintenance Window End ]</option>
-                <option value="Estabilizacion">[ Stabilization ]</option>
-                <option value="Rollback">[ Rollback ]</option>
-                <option value="Cancelled">[ Cancellation ]</option>
-                <option value="Informativa">[ Informational ]</option>
-                <option value="Termino">[ End ]</option>
-                <option value="Update">[ Update ]</option>
-                <option value="Actualizacion">[ Update ]</option>
-                <option value="Upgrade">[ Upgrade ]</option>
-                <option value="Downgrade">[ Downgrade ]</option>
-                <option value="Errata">[ Erratum / Correction Notice ]</option>
+                <option value="Afectacion">[ Outage Start Notify]</option>
+		<option value="ActualizacionAfectacion">[ Outage Update Notify ]</option>
+		<option value="Restablecimiento">[ Outage End Notify ]</option>
+                <option value="Intermitencia">[ Intermittency Start NotiFy ]</option>
+		<option value="ActualizacionIntermitencia">[ Intermittency Update Notify ]</option>
+		<option value="Restablecimiento">[ Intermittency End Notify ]</option>
+		<option value="Ventana de Mantenimiento">[ Scheduled Maintenance Window Notify ]</option>
+		<option value="InicioVM">[ Maintenance Window Start Notify ]</option>
+                <option value="Termino">[ Maintenance Window End Notify ]</option>
+                <option value="Estabilizacion">[ Stabilization Notify ]</option>
+                <option value="Rollback">[ Rollback Notify ]</option>
+                <option value="Cancelled">[ Cancellation Notify ]</option>
+                <option value="Informativa">[ Informational Notify ]</option>
+                <option value="Termino">[ End Notify ]</option>
+                <option value="Update">[ Update Notify ]</option>
+                <option value="Actualizacion">[ Update Notify ]</option>
+                <option value="Upgrade">[ Upgrade Notify ]</option>
+                <option value="Downgrade">[ Downgrade Notify ]</option>
+                <option value="Errata">[ Erratum / Correction Notice Notify ]</option>
                 <option value="Blanco">          </option>
             </select>
             <img alt="Imagen del tipo de notificación" class="dynamic-image" crossorigin="anonymous" id="imagenTipoNotificacion" src="" style="display: none;"/>
@@ -1314,42 +1315,42 @@
         }
 
         let primeraParteAsunto = '';
-        if (tipoNotifTexto.includes('Afectación')) {
-            primeraParteAsunto = 'Afectación';
-        } else if (tipoNotifTexto.includes('Intermitencia')) {
-            primeraParteAsunto = 'Intermitencia';
-        } else if (tipoNotifTexto.includes('Ventana de Mantenimiento')) {
-            primeraParteAsunto = 'Ventana de Mantenimiento';
+        if (tipoNotifTexto.includes('Outage')) {
+            primeraParteAsunto = 'Outage';
+        } else if (tipoNotifTexto.includes('Intermittency')) {
+            primeraParteAsunto = 'Intermittency';
+        } else if (tipoNotifTexto.includes('Maintenance Window')) {
+            primeraParteAsunto = 'Maintenance Window';
         } else if (tipoNotifTexto.includes('Rollback')) {
             primeraParteAsunto = 'Rollback';
-        } else if (tipoNotifTexto.includes('Cancelación')) {
-            primeraParteAsunto = 'Cancelación';
-        } else if (tipoNotifTexto.includes('Informativa')) {
-            primeraParteAsunto = 'Informativa';
-        } else if (tipoNotifTexto.includes('Término')) {
-            primeraParteAsunto = 'Término';
+        } else if (tipoNotifTexto.includes('Cancellation')) {
+            primeraParteAsunto = 'Cancellation';
+        } else if (tipoNotifTexto.includes('Informational')) {
+            primeraParteAsunto = 'Informational';
+        } else if (tipoNotifTexto.includes('End')) {
+            primeraParteAsunto = 'End';
         }
     
         let segundaParteAsunto = '';
-        if (tipoNotifTexto.includes('Inicio de')) {
-            segundaParteAsunto = 'Inicio';
-        } else if (tipoNotifTexto.includes('Actualización')) {
-            segundaParteAsunto = 'Actualización';
-        } else if (tipoNotifTexto.includes('Término de')) {
-            segundaParteAsunto = 'Término';
-        } else if (tipoNotifTexto.includes('Ventana de Mantenimiento Programada')) {
-            primeraParteAsunto = 'Ventana de Mantenimiento Programada'; // Corrección para el primer corchete
-            segundaParteAsunto = 'Ventana de Mantenimiento Programada';
-        } else if (tipoNotifTexto.includes('Inicia Ventana de Mantenimiento')) {
-            primeraParteAsunto = 'Ventana de Mantenimiento';
-            segundaParteAsunto = 'Inicio';
+        if (tipoNotifTexto.includes('Start')) {
+            segundaParteAsunto = 'Start';
+        } else if (tipoNotifTexto.includes('Update')) {
+            segundaParteAsunto = 'Update';
+        } else if (tipoNotifTexto.includes('End')) {
+            segundaParteAsunto = 'End';
+        } else if (tipoNotifTexto.includes('Scheduled Maintenance Window Notify')) {
+            primeraParteAsunto = 'Scheduled Maintenance Window Notify'; // Corrección para el primer corchete
+            segundaParteAsunto = 'Scheduled Maintenance Window Notify';
+        } else if (tipoNotifTexto.includes('Maintenance Window Start')) {
+            primeraParteAsunto = 'Maintenance Window';
+            segundaParteAsunto = 'Start';
         } else {
             segundaParteAsunto = tipoNotifTexto.replace(/\[|\]/g, '').trim();
         }
 
         const serviciosAfectadosString = servicios.length > 0 ? servicios.join(', ') : 'to be defined';
         
-        const subject = `[Notificación de ${primeraParteAsunto}] - [${segundaParteAsunto}] - [${plataformas.join(', ')}] [${titulo}] ${serviciosAfectadosString}`;
+        const subject = `[${primeraParteAsunto} Notify] - [${segundaParteAsunto}] - [${plataformas.join(', ')}] [${titulo}] ${serviciosAfectadosString}`;
 
         const todosLosDestinatarios = new Set(['soporte@speedymovil.com', ...correosAdicionales]);
         const destinatariosString = Array.from(todosLosDestinatarios).join(',');
