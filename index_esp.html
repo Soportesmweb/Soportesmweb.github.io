@@ -580,6 +580,7 @@
 		<option value="ActualizacionIntermitencia">[ Actualización de Intermitencia ]</option>
 		<option value="Restablecimiento">[ Término de Intermitencia ]</option>
 		<option value="Ventana de Mantenimiento">[ Ventana de Mantenimiento Programada ]</option>
+		<option value="Ventana de Mantenimiento">[ Ventana de Mantenimiento Emergente ]</option>		
 		<option value="InicioVM">[ Inicia Ventana de Mantenimiento ]</option>
                 <option value="Termino">[ Término de Ventana de Mantenimiento ]</option>
                 <option value="Estabilizacion">[ Estabilización ]</option>
@@ -1339,6 +1340,9 @@
         } else if (tipoNotifTexto.includes('Ventana de Mantenimiento Programada')) {
             primeraParteAsunto = 'Ventana de Mantenimiento Programada'; // Corrección para el primer corchete
             segundaParteAsunto = 'Ventana de Mantenimiento Programada';
+		} else if (tipoNotifTexto.includes('Ventana de Mantenimiento Emergente')) {
+            primeraParteAsunto = 'Ventana de Mantenimiento Emergente'; // Corrección para el primer corchete
+            segundaParteAsunto = 'Ventana de Mantenimiento Emergente';	
         } else if (tipoNotifTexto.includes('Inicia Ventana de Mantenimiento')) {
             primeraParteAsunto = 'Ventana de Mantenimiento';
             segundaParteAsunto = 'Inicio';
