@@ -602,6 +602,7 @@
             <select class="focus:ring-indigo-500 focus:border-red-500" id="tipoSistema" multiple="" required="" size="9">
                 <option value="SMI">SMI</option>
                 <option value="Mi Telcel App">Mi Telcel App</option>
+				<option value="Mi Telcel App">Mi Telcel Web</option>
                 <option value="Mi Claro App">Mi Claro App</option>
                 <option value="Apigee">Apigee</option>
                 <option value="Contenedor">Contenedor</option>
@@ -1186,7 +1187,7 @@
         }));
 
         const plataformaImageMap = {
-            "SMI": "smi.png", "Mi Telcel App": "mitelcel.png", "Mi Claro App": "miclaro.png",
+            "SMI": "smi.png", "Mi Telcel App": "mitelcel.png", "Mi Telcel Web": "mitelcelw.png" "Mi Claro App": "miclaro.png",
             "Apigee": "apigee.png", "Contenedor": "contenedor.png", "HUB": "hub.png", "HUB IoT": "hubiot.png",
             "SMT": "smt.png", "SMS HUB": "smshub.png", "CMP": "cmp.png", "Claro Música": "claromusica.png", "Claro Video": "clarovideo.png",
             "Netflix": "netflix.png", "Disney": "disney.png", "Amazon": "amazon.png",
@@ -1386,7 +1387,7 @@
         const selectedValues = getSelectedOptions(tipoSistemaSelect);
         plataformasSeleccionadasContainer.innerHTML = '';
         const imageMap = {
-            "SMI": "smi.png", "Mi Telcel App": "mitelcel.png", "Mi Claro App": "miclaro.png",
+            "SMI": "smi.png", "Mi Telcel App": "mitelcel.png", "Mi Telcel Web": "mitelcelw.png", "Mi Claro App": "miclaro.png",
             "Apigee": "apigee.png", "Contenedor": "contenedor.png", "HUB": "hub.png", "HUB IoT": "hubiot.png",
             "SMT": "smt.png", "SMS HUB": "smshub.png", "CMP": "cmp.png", "Claro Música": "claromusica.png", "Claro Video": "clarovideo.png",
             "Netflix": "netflix.png", "Disney": "disney.png", "Amazon": "amazon.png",
