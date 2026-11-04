@@ -477,7 +477,7 @@
 .database-panel h3 { margin:0 0 12px; font-size:1.1rem; font-weight:700; color:#1e293b; }
 .db-record { display:flex; justify-content:space-between; align-items:center; gap:12px; background:white; border:1px solid #dbe3ec; border-radius:8px; padding:10px 12px; margin-top:8px; }
 .db-record button { margin:0; padding:8px 12px; font-size:.9rem; }
-#appContainer { display:none; }
+
 </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -570,15 +570,6 @@
 </style>
 </head>
 <body>
-<div class="auth-panel" id="authPanel">
-    <h2 class="text-xl font-bold">Acceso al generador</h2>
-    <p>Ingresa con el correo autorizado para consultar y guardar notificaciones.</p>
-    <label for="authEmail">Correo autorizado:</label>
-    <input type="email" id="authEmail" autocomplete="email" placeholder="nombre@empresa.com">
-    <button type="button" id="authLoginBtn">Enviar enlace de acceso</button>
-    <button type="button" id="authLogoutBtn" style="display:none;">Cerrar sesión</button>
-    <div id="authStatus" role="status" aria-live="polite"></div>
-</div>
 <div class="container" id="appContainer">
     <img alt="Logo de la empresa" class="logo-img rounded-full" crossorigin="anonymous" onerror="this.onerror=null;this.src='onerror.png';" src="speedylogo.png"/>
     <h1 class="text-3xl font-bold text-gray-800 mb-8 text-center">Generador de Notificaciones Interactivo</h1>
@@ -1891,7 +1882,6 @@ window.cargarDesdeTXT = function() {
     const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_3cQ20YjOw3Yoz6kNSj-4Mg_9NfGNpHS';
     const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
     const $ = id => document.getElementById(id);
-    let currentSession = null;
 
     function setStatus(id, message, isError=false) {
         const el=$(id); if (!el) return;
@@ -1900,22 +1890,6 @@ window.cargarDesdeTXT = function() {
     function localDateString(date=new Date()) {
         const d=new Date(date.getTime()-date.getTimezoneOffset()*60000);
         return d.toISOString().slice(0,10);
-    }
-    function setAuthenticated(session) {
-        currentSession=session;
-        $('appContainer').style.display=session ? 'block' : 'none';
-        $('authEmail').style.display=session ? 'none' : 'block';
-        $('authLoginBtn').style.display=session ? 'none' : 'inline-block';
-        $('authLogoutBtn').style.display=session ? 'inline-block' : 'none';
-        if (session) {
-            $('authEmail').value=session.user.email || '';
-            setStatus('authStatus','Sesión activa: '+(session.user.email || 'usuario autorizado'));
-            buscarNotificaciones();
-        } else {
-            $('authEmail').value='';
-            setStatus('authStatus','Inicia sesión para usar el historial en línea.');
-            $('dbRecords').replaceChildren();
-        }
     }
     function getFormState() {
         const form=$('generadorForm'), fields={}, groups={};
@@ -1985,13 +1959,13 @@ window.cargarDesdeTXT = function() {
         return {title,type,eventDate};
     }
     async function guardarNotificacion() {
-        if (!currentSession) return setStatus('dbStatus','Inicia sesión primero.',true);
+
         const title=$('tituloNotificacion').value.trim();
         if (!title) return setStatus('dbStatus','Escribe el título antes de guardar.',true);
         const typeSelect=$('tipoNotificacion');
         const type=typeSelect.selectedOptions[0]?.textContent.replace(/[\[\]]/g,'').trim() || '';
         const eventDate=$('horaInicio').value ? $('horaInicio').value.slice(0,10) : localDateString();
-        const row={titulo:title,tipo_notificacion:type,fecha_evento:eventDate,payload:getFormState(),created_by:currentSession.user.id};
+        const row={titulo:title,tipo_notificacion:type,fecha_evento:eventDate,payload:getFormState(),created_by:null};
         setStatus('dbStatus','Guardando…');
         const {error}=await client.from('notificaciones').insert(row);
         if (error) return setStatus('dbStatus','No se pudo guardar: '+error.message,true);
@@ -2000,7 +1974,7 @@ window.cargarDesdeTXT = function() {
         await buscarNotificaciones();
     }
     async function buscarNotificaciones() {
-        if (!currentSession) return;
+
         const date=$('fechaBusqueda').value || localDateString(); $('fechaBusqueda').value=date;
         setStatus('dbStatus','Buscando…');
         const {data,error}=await client.from('notificaciones').select('id,created_at,fecha_evento,titulo,tipo_notificacion,payload,legacy_txt').eq('fecha_evento',date).order('created_at',{ascending:false}).limit(100);
@@ -2033,39 +2007,28 @@ window.cargarDesdeTXT = function() {
         } catch (error) { setStatus('dbStatus','No se pudo cargar el registro: '+error.message,true); }
     }
     async function importarTxt(files) {
-        if (!currentSession || !files.length) return;
+
         setStatus('dbStatus','Importando '+files.length+' archivo(s)…');
         const rows=[];
         for (const file of files) {
             const text=await file.text(), meta=parseLegacyTxt(text);
-            rows.push({titulo:meta.title,tipo_notificacion:meta.type,fecha_evento:meta.eventDate,legacy_txt:text,created_by:currentSession.user.id});
+            rows.push({titulo:meta.title,tipo_notificacion:meta.type,fecha_evento:meta.eventDate,legacy_txt:text,created_by:null});
         }
         const {error}=await client.from('notificaciones').insert(rows);
         if (error) return setStatus('dbStatus','No se pudieron importar los TXT: '+error.message,true);
         $('fechaBusqueda').value=parseLegacyTxt(await files[0].text()).eventDate;
         setStatus('dbStatus',rows.length+' TXT importado(s).'); await buscarNotificaciones();
     }
-    async function iniciarSesion() {
-        const email=$('authEmail').value.trim();
-        if (!email) return setStatus('authStatus','Escribe tu correo autorizado.',true);
-        setStatus('authStatus','Enviando enlace seguro…');
-        const {error}=await client.auth.signInWithOtp({email,options:{shouldCreateUser:false,emailRedirectTo:location.href}});
-        setStatus('authStatus',error ? 'No se pudo enviar el enlace: '+error.message : 'Si el correo está autorizado, recibirás un enlace para iniciar sesión.',!!error);
-    }
-    document.addEventListener('DOMContentLoaded',async()=>{
+    document.addEventListener('DOMContentLoaded',()=>{
         $('fechaBusqueda').value=localDateString();
-        $('authLoginBtn').addEventListener('click',iniciarSesion);
-        $('authEmail').addEventListener('keydown',event=>{if(event.key==='Enter') iniciarSesion();});
-        $('authLogoutBtn').addEventListener('click',async()=>{await client.auth.signOut();setStatus('authStatus','Sesión cerrada.');});
         $('guardarNotificacionBtn').addEventListener('click',guardarNotificacion);
         $('buscarNotificacionesBtn').addEventListener('click',buscarNotificaciones);
         $('fechaBusqueda').addEventListener('change',buscarNotificaciones);
         $('importarTxtBtn').addEventListener('click',()=>$('inputImportarTxt').click());
         $('inputImportarTxt').addEventListener('change',event=>{importarTxt(Array.from(event.target.files || []));event.target.value='';});
-        const {data}=await client.auth.getSession(); setAuthenticated(data.session);
-        client.auth.onAuthStateChange((_event,session)=>setAuthenticated(session));
+        buscarNotificaciones();
     });
-})();
+})();;
 </script>
 </body>
 
