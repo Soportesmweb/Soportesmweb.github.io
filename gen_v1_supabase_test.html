@@ -1882,6 +1882,7 @@ window.cargarDesdeTXT = function() {
     const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_3cQ20YjOw3Yoz6kNSj-4Mg_9NfGNpHS';
     const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
     const $ = id => document.getElementById(id);
+    let currentSession = null;
 
     function setStatus(id, message, isError=false) {
         const el=$(id); if (!el) return;
@@ -1890,6 +1891,22 @@ window.cargarDesdeTXT = function() {
     function localDateString(date=new Date()) {
         const d=new Date(date.getTime()-date.getTimezoneOffset()*60000);
         return d.toISOString().slice(0,10);
+    }
+    function setAuthenticated(session) {
+        currentSession=session;
+        $('appContainer').style.display=session ? 'block' : 'none';
+        $('authEmail').style.display=session ? 'none' : 'block';
+        $('authLoginBtn').style.display=session ? 'none' : 'inline-block';
+        $('authLogoutBtn').style.display=session ? 'inline-block' : 'none';
+        if (session) {
+            $('authEmail').value=session.user.email || '';
+            setStatus('authStatus','Sesión activa: '+(session.user.email || 'usuario autorizado'));
+            buscarNotificaciones();
+        } else {
+            $('authEmail').value='';
+            setStatus('authStatus','Inicia sesión para usar el historial en línea.');
+            $('dbRecords').replaceChildren();
+        }
     }
     function getFormState() {
         const form=$('generadorForm'), fields={}, groups={};
@@ -1946,10 +1963,8 @@ window.cargarDesdeTXT = function() {
     }
     function parseLegacyTxt(text) {
         const read=label=>{
-            const escaped=label.replace(/[.*+?^${}()|[\]\\]/g,'\\</body>');
-            const m=text.match(new RegExp('^'+escaped+'\\s*:\\s*(.*)
-
-</html>,'m'));
+            const escaped=label.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+            const m=text.match(new RegExp('^'+escaped+'\\s*:\\s*(.*)$','m'));
             return m ? m[1].trim() : '';
         };
         const title=read('Título') || 'Notificación importada';
@@ -1959,13 +1974,13 @@ window.cargarDesdeTXT = function() {
         return {title,type,eventDate};
     }
     async function guardarNotificacion() {
-
+        if (!currentSession) return setStatus('dbStatus','Inicia sesión primero.',true);
         const title=$('tituloNotificacion').value.trim();
         if (!title) return setStatus('dbStatus','Escribe el título antes de guardar.',true);
         const typeSelect=$('tipoNotificacion');
         const type=typeSelect.selectedOptions[0]?.textContent.replace(/[\[\]]/g,'').trim() || '';
         const eventDate=$('horaInicio').value ? $('horaInicio').value.slice(0,10) : localDateString();
-        const row={titulo:title,tipo_notificacion:type,fecha_evento:eventDate,payload:getFormState(),created_by:null};
+        const row={titulo:title,tipo_notificacion:type,fecha_evento:eventDate,payload:getFormState(),created_by:currentSession.user.id};
         setStatus('dbStatus','Guardando…');
         const {error}=await client.from('notificaciones').insert(row);
         if (error) return setStatus('dbStatus','No se pudo guardar: '+error.message,true);
@@ -1974,7 +1989,7 @@ window.cargarDesdeTXT = function() {
         await buscarNotificaciones();
     }
     async function buscarNotificaciones() {
-
+        if (!currentSession) return;
         const date=$('fechaBusqueda').value || localDateString(); $('fechaBusqueda').value=date;
         setStatus('dbStatus','Buscando…');
         const {data,error}=await client.from('notificaciones').select('id,created_at,fecha_evento,titulo,tipo_notificacion,payload,legacy_txt').eq('fecha_evento',date).order('created_at',{ascending:false}).limit(100);
@@ -2007,28 +2022,39 @@ window.cargarDesdeTXT = function() {
         } catch (error) { setStatus('dbStatus','No se pudo cargar el registro: '+error.message,true); }
     }
     async function importarTxt(files) {
-
+        if (!currentSession || !files.length) return;
         setStatus('dbStatus','Importando '+files.length+' archivo(s)…');
         const rows=[];
         for (const file of files) {
             const text=await file.text(), meta=parseLegacyTxt(text);
-            rows.push({titulo:meta.title,tipo_notificacion:meta.type,fecha_evento:meta.eventDate,legacy_txt:text,created_by:null});
+            rows.push({titulo:meta.title,tipo_notificacion:meta.type,fecha_evento:meta.eventDate,legacy_txt:text,created_by:currentSession.user.id});
         }
         const {error}=await client.from('notificaciones').insert(rows);
         if (error) return setStatus('dbStatus','No se pudieron importar los TXT: '+error.message,true);
         $('fechaBusqueda').value=parseLegacyTxt(await files[0].text()).eventDate;
         setStatus('dbStatus',rows.length+' TXT importado(s).'); await buscarNotificaciones();
     }
-    document.addEventListener('DOMContentLoaded',()=>{
+    async function iniciarSesion() {
+        const email=$('authEmail').value.trim();
+        if (!email) return setStatus('authStatus','Escribe tu correo autorizado.',true);
+        setStatus('authStatus','Enviando enlace seguro…');
+        const {error}=await client.auth.signInWithOtp({email,options:{shouldCreateUser:false,emailRedirectTo:location.href}});
+        setStatus('authStatus',error ? 'No se pudo enviar el enlace: '+error.message : 'Si el correo está autorizado, recibirás un enlace para iniciar sesión.',!!error);
+    }
+    document.addEventListener('DOMContentLoaded',async()=>{
         $('fechaBusqueda').value=localDateString();
+        $('authLoginBtn').addEventListener('click',iniciarSesion);
+        $('authEmail').addEventListener('keydown',event=>{if(event.key==='Enter') iniciarSesion();});
+        $('authLogoutBtn').addEventListener('click',async()=>{await client.auth.signOut();setStatus('authStatus','Sesión cerrada.');});
         $('guardarNotificacionBtn').addEventListener('click',guardarNotificacion);
         $('buscarNotificacionesBtn').addEventListener('click',buscarNotificaciones);
         $('fechaBusqueda').addEventListener('change',buscarNotificaciones);
         $('importarTxtBtn').addEventListener('click',()=>$('inputImportarTxt').click());
         $('inputImportarTxt').addEventListener('change',event=>{importarTxt(Array.from(event.target.files || []));event.target.value='';});
-        buscarNotificaciones();
+        const {data}=await client.auth.getSession(); setAuthenticated(data.session);
+        client.auth.onAuthStateChange((_event,session)=>setAuthenticated(session));
     });
-})();;
+})();
 </script>
 </body>
 
