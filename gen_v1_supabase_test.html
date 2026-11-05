@@ -1897,6 +1897,7 @@ window.cargarDesdeTXT = function() {
             if (el.type==='file' || el.type==='button' || el.type==='submit') return;
             if (el.type==='checkbox' || el.type==='radio') fields[el.id]={type:el.type,checked:el.checked,value:el.value};
             else if (el.tagName==='SELECT' && el.multiple) fields[el.id]={type:'select-multiple',values:Array.from(el.selectedOptions).map(o=>o.value)};
+            else if (el.tagName==='SELECT') fields[el.id]={type:'select',value:el.value,selectedText:el.selectedOptions[0]?.textContent || '',selectedIndex:el.selectedIndex};
             else fields[el.id]={type:el.tagName.toLowerCase(),value:el.value};
         });
         form.querySelectorAll('input[type="checkbox"][name]:not([id]), input[type="radio"][name]:not([id])').forEach(el => {
@@ -1924,7 +1925,14 @@ window.cargarDesdeTXT = function() {
             const el=$(id); if (!el) return;
             if (saved.type==='checkbox' || saved.type==='radio') el.checked=!!saved.checked;
             else if (saved.type==='select-multiple') setSelectValues(el,saved.values || []);
-            else if (el.tagName==='SELECT') setSelectValues(el,saved.value ? [saved.value] : []);
+            else if (el.tagName==='SELECT') {
+                const normalizarTexto = value => String(value || '').replace(/[\[\]]/g,'').replace(/\s+/g,' ').trim();
+                let index = saved.selectedText ? Array.from(el.options).findIndex(option => normalizarTexto(option.textContent) === normalizarTexto(saved.selectedText)) : -1;
+                if (index < 0 && Number.isInteger(saved.selectedIndex) && saved.selectedIndex >= 0 && saved.selectedIndex < el.options.length && el.options[saved.selectedIndex].value === saved.value) index = saved.selectedIndex;
+                if (index < 0) index = Array.from(el.options).findIndex(option => option.value === saved.value);
+                if (index < 0 && saved.value) { const option=document.createElement('option'); option.value=saved.value; option.textContent=saved.value; el.appendChild(option); index=el.options.length-1; }
+                el.selectedIndex=index;
+            }
             else el.value=saved.value ?? '';
         });
         Object.entries(state.groups || {}).forEach(([name, values]) => {
@@ -1995,7 +2003,13 @@ window.cargarDesdeTXT = function() {
     }
     function cargarRegistro(record) {
         try {
-            if (record.payload) { restoreFormState(record.payload); setStatus('dbStatus','Registro cargado en el formulario.'); return; }
+            if (record.payload) {
+                const payload=JSON.parse(JSON.stringify(record.payload));
+                if (record.tipo_notificacion && payload.fields && payload.fields.tipoNotificacion) payload.fields.tipoNotificacion.selectedText=record.tipo_notificacion;
+                restoreFormState(payload);
+                setStatus('dbStatus','Registro cargado en el formulario.');
+                return;
+            }
             if (record.legacy_txt) {
                 const dt=new DataTransfer(); dt.items.add(new File([record.legacy_txt],'notificacion_importada.txt',{type:'text/plain'}));
                 const input=$('inputCargarTXT'); input.files=dt.files; input.dispatchEvent(new Event('change',{bubbles:true}));
