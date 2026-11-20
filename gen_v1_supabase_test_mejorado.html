@@ -651,9 +651,11 @@
 }
 
 #resultado .tipo-notificacion-texto {
-    display: inline-block;
-    width: auto;
-    margin: 0 !important;
+    display: block !important;
+    width: max-content !important;
+    max-width: 100%;
+    align-self: center !important;
+    margin: 0 auto !important;
     padding: 4px 11px;
     border-radius: 999px;
     background: #dceafb;
@@ -661,6 +663,7 @@
     font-size: 11px !important;
     font-weight: 700;
     letter-spacing: .07em;
+    text-align: center !important;
     text-transform: uppercase;
 }
 
