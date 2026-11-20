@@ -2119,10 +2119,8 @@ window.cargarDesdeTXT = function() {
     }
     function parseLegacyTxt(text) {
         const read=label=>{
-            const escaped=label.replace(/[.*+?^${}()|[\]\\]/g,'\\</body>');
-            const m=text.match(new RegExp('^'+escaped+'\\s*:\\s*(.*)
-
-</html>,'m'));
+            const escaped=label.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+            const m=text.match(new RegExp('^'+escaped+'\\s*:\\s*(.*)$','m'));
             return m ? m[1].trim() : '';
         };
         const title=read('Título') || 'Notificación importada';
