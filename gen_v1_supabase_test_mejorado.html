@@ -593,7 +593,7 @@
 
 #resultado .preview-grid {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
-    gap: 0 !important;
+    gap: 8px !important;
     border: 0 !important;
     background: transparent !important;
 }
@@ -601,10 +601,10 @@
 #resultado .preview-grid-cell {
     min-width: 0;
     padding: 12px 14px !important;
-    border: 0 !important;
-    border-radius: 0 !important;
+    border: 1px solid #cbd8e7 !important;
+    border-radius: 10px !important;
     background: rgba(255, 255, 255, .94) !important;
-    box-shadow: none !important;
+    box-shadow: 0 3px 9px rgba(34, 55, 84, .08) !important;
     color: #24364d;
     overflow-wrap: anywhere;
 }
@@ -628,6 +628,7 @@
     text-align: center;
     padding: 14px 18px !important;
     background: linear-gradient(105deg, #e9f2fc 0%, #f7faff 52%, #e9f2fc 100%) !important;
+    border: 2px solid #9bb8dc !important;
     border-top: 3px solid #3a73bd !important;
 }
 
@@ -675,12 +676,12 @@
 }
 
 #resultado .orange-bordered-cell {
-    border-left: 6px solid #f28c28 !important;
+    border: 2px solid #f28c28 !important;
     background: #fff5e9 !important;
 }
 
 #resultado .preview-grid-cell[style*="#3b82f6"] {
-    border-left: 6px solid #3b82f6 !important;
+    border: 2px solid #3b82f6 !important;
     background: #edf5ff !important;
 }
 
