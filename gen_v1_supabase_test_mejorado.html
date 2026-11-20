@@ -614,7 +614,9 @@
 }
 
 /* Mantiene un solo bloque visual desde el encabezado hasta “¿En qué consiste?” */
-#resultado .preview-grid > .preview-grid-cell:nth-child(-n+6) {
+#resultado .preview-grid > .preview-grid-cell:nth-child(-n+4),
+#resultado .preview-grid > .preview-grid-cell:nth-child(5):not(.orange-bordered-cell):not([style*="#3b82f6"]),
+#resultado .preview-grid > .preview-grid-cell:has(.description-text) {
     border: 0 !important;
     border-radius: 0 !important;
     box-shadow: none !important;
@@ -683,13 +685,13 @@
 }
 
 #resultado .orange-bordered-cell {
-    border: 2px solid #f28c28 !important;
-    background: rgba(255, 255, 255, .82) !important;
+    border: 3px solid #f28c28 !important;
+    background: #fff8ef !important;
 }
 
 #resultado .preview-grid-cell[style*="#3b82f6"] {
-    border: 2px solid #3b82f6 !important;
-    background: rgba(255, 255, 255, .82) !important;
+    border: 3px solid #3b82f6 !important;
+    background: #f0f6ff !important;
 }
 
 #resultado .notification-table th,
