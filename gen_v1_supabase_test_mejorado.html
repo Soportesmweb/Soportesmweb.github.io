@@ -585,7 +585,7 @@
     padding: 12px !important;
     border: 1px solid #ccd9e8 !important;
     border-radius: 14px !important;
-    background: #ffffff !important;
+    background: url('fondomsco.png') center center / cover no-repeat !important;
     box-shadow: 0 8px 22px rgba(24, 45, 75, .14) !important;
     color: #243247 !important;
     line-height: 1.45 !important;
@@ -603,7 +603,7 @@
     padding: 12px 14px !important;
     border: 1px solid #cbd8e7 !important;
     border-radius: 10px !important;
-    background: #ffffff !important;
+    background: rgba(255, 255, 255, .82) !important;
     box-shadow: 0 3px 9px rgba(34, 55, 84, .08) !important;
     color: #24364d;
     overflow-wrap: anywhere;
@@ -611,6 +611,13 @@
 
 #resultado .preview-grid-cell.spanning-row {
     grid-column: 1 / -1;
+}
+
+/* Mantiene un solo bloque visual desde el encabezado hasta “¿En qué consiste?” */
+#resultado .preview-grid > .preview-grid-cell:nth-child(-n+6) {
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
 }
 
 #resultado .preview-grid-cell:nth-child(1) {
@@ -627,7 +634,7 @@
     align-items: center;
     text-align: center;
     padding: 14px 18px !important;
-    background: #ffffff !important;
+    background: rgba(255, 255, 255, .82) !important;
     border: 2px solid #9bb8dc !important;
     border-top: 3px solid #3a73bd !important;
 }
@@ -677,12 +684,12 @@
 
 #resultado .orange-bordered-cell {
     border: 2px solid #f28c28 !important;
-    background: #ffffff !important;
+    background: rgba(255, 255, 255, .82) !important;
 }
 
 #resultado .preview-grid-cell[style*="#3b82f6"] {
     border: 2px solid #3b82f6 !important;
-    background: #ffffff !important;
+    background: rgba(255, 255, 255, .82) !important;
 }
 
 #resultado .notification-table th,
