@@ -779,8 +779,16 @@ body * {
 
 #resultado .blue-indicator.row-span-2 > .preview-section-content {
     box-sizing: border-box !important;
-    padding-left: 3px !important;
+    padding-left: 0 !important;
     padding-right: 0 !important;
+}
+
+#resultado .blue-indicator.row-span-2 > .preview-section-content:first-of-type {
+    text-align: center !important;
+}
+
+#resultado .blue-indicator.row-span-2 > .preview-section-content:nth-of-type(2) {
+    text-align: justify !important;
 }
 
 /* Márgenes de 4 px a cada lado crean 8 px blancos entre tarjetas vecinas. */
